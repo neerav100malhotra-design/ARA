@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARA Silver Jewellery - Business Management Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- JSZip Library for Deployment Package Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- Google Fonts for Luxury Aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom Styles for Luxury Branding & Fine Design Details -->
+  <style>
+    :root {
+      --bg-ivory: #FBF9F5;
+      --sidebar-charcoal: #121417;
+      --accent-gold: #D4AF37;
+      --accent-gold-dark: #AA8721;
+      --accent-gold-light: #F4E8C1;
+      --text-main: #1C1917;
+      --card-bg: #FFFFFF;
+      --border-light: #E7E5E4;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-ivory);
+      color: var(--text-main);
+    }
+
+    .font-serif-luxury {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.03);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 55, 0.3);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-gold);
+    }
+
+    /* Gold accent animations & glows */
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #D4AF37 0%, #AA8721 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gold-border-focus:focus {
+      outline: none;
+      border-color: #D4AF37;
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+
+    /* Print styling for Invoice Modal */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printableInvoice, #printableInvoice * {
+        visibility: visible;
+      }
+      #printableInvoice {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden bg-[#FBF9F5]">
+
+  <!-- TOP BANNER & EXTERNAL LINKS BAR -->
+  <div class="bg-[#121417] text-[#D4AF37] text-xs py-2 px-4 border-b border-[#2A2E35] flex flex-wrap justify-between items-center z-50">
+    <div class="flex items-center space-x-3">
+      <span class="bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-semibold">Live System</span>
+      <span class="text-stone-300 hidden sm:inline"><i class="fa-solid fa-[#D4AF37] fa-database mr-1"></i> Data synced locally with Browser LocalStorage</span>
+    </div>
+    
+    <div class="flex items-center space-x-4 font-medium">
+      <!-- Site Link requested -->
+      <a href="https://arapcb.com" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-1.5 text-stone-200 hover:text-[#D4AF37] transition-colors">
+        <i class="fa-solid fa-[#D4AF37] fa-globe text-[#D4AF37]"></i>
+        <span class="font-semibold underline underline-offset-2">Main Site: arapcb.com</span>
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-70"></i>
+      </a>
+      <span class="text-stone-600">|</span>
+      <!-- Repository Link requested -->
+      <a href="https://github.com/neerav100malhotra-design/ARA" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-1.5 text-stone-200 hover:text-[#D4AF37] transition-colors">
+        <i class="fa-brands fa-github text-stone-300"></i>
+        <span>GitHub Repository</span>
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-70"></i>
+      </a>
+      <span class="text-stone-600">|</span>
+      <button onclick="openDeploymentModal()" class="bg-[#D4AF37] text-stone-900 hover:bg-[#c29f2e] px-2.5 py-0.5 rounded font-bold text-[11px] transition-all flex items-center space-x-1 shadow-sm">
+        <i class="fa-solid fa-file-zipper"></i>
+        <span>Export Static Package</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN WRAPPER WITH DARK CHARCOAL SIDEBAR AND IVORY CONTENT -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-[#121417] text-stone-300 flex flex-col border-r border-[#22262C] flex-shrink-0 z-30">
+      <!-- Brand Logo Header -->
+      <div class="p-6 border-b border-[#22262C] flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-full border border-[#D4AF37] flex items-center justify-center bg-[#1C1F26] text-[#D4AF37] shadow-inner font-serif-luxury font-bold text-2xl tracking-tighter">
+          ARA
+        </div>
+        <div>
+          <h1 class="font-serif-luxury text-2xl font-bold tracking-widest text-stone-100 uppercase leading-none">ARA</h1>
+          <p class="text-[10px] uppercase tracking-widest text-[#D4AF37] font-medium mt-1">Silver Jewellery</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1 text-sm font-medium">
+        <a href="#overview" onclick="switchTab('overview')" id="nav-overview" class="nav-item active flex items-center px-3 py-2.5 rounded-lg text-[#D4AF37] bg-[#1C1F26] border-l-2 border-[#D4AF37] transition-all">
+          <i class="fa-solid fa-chart-pie w-6 text-center text-[#D4AF37]"></i>
+          <span class="ml-2">Overview</span>
+        </a>
+        <a href="#products" onclick="switchTab('products')" id="nav-products" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-gem w-6 text-center"></i>
+          <span class="ml-2">Products</span>
+        </a>
+        <a href="#inventory" onclick="switchTab('inventory')" id="nav-inventory" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-boxes-stacked w-6 text-center"></i>
+          <span class="ml-2">Inventory</span>
+        </a>
+        <a href="#orders" onclick="switchTab('orders')" id="nav-orders" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-shopping-bag w-6 text-center"></i>
+          <span class="ml-2">Orders</span>
+        </a>
+        <a href="#customers" onclick="switchTab('customers')" id="nav-customers" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-users w-6 text-center"></i>
+          <span class="ml-2">Customers</span>
+        </a>
+        <a href="#shipping" onclick="switchTab('shipping')" id="nav-shipping" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-truck-fast w-6 text-center"></i>
+          <span class="ml-2">Shipping</span>
+        </a>
+        <a href="#finance" onclick="switchTab('finance')" id="nav-finance" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-coins w-6 text-center"></i>
+          <span class="ml-2">Finance</span>
+        </a>
+        <a href="#marketing" onclick="switchTab('marketing')" id="nav-marketing" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-bullhorn w-6 text-center"></i>
+          <span class="ml-2">Marketing</span>
+        </a>
+        <a href="#analytics" onclick="switchTab('analytics')" id="nav-analytics" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-chart-line w-6 text-center"></i>
+          <span class="ml-2">Analytics</span>
+        </a>
+        <a href="#datamgmt" onclick="switchTab('datamgmt')" id="nav-datamgmt" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-database w-6 text-center"></i>
+          <span class="ml-2">Data & Storage</span>
+        </a>
+        <a href="#settings" onclick="switchTab('settings')" id="nav-settings" class="nav-item flex items-center px-3 py-2.5 rounded-lg text-stone-400 hover:text-stone-100 hover:bg-[#1A1D23] transition-all">
+          <i class="fa-solid fa-sliders w-6 text-center"></i>
+          <span class="ml-2">Settings</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer User Profile -->
+      <div class="p-4 border-t border-[#22262C] flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center text-[#D4AF37] font-bold text-xs">
+            NM
+          </div>
+          <div class="text-xs">
+            <p class="text-stone-200 font-semibold leading-tight">Neerav Malhotra</p>
+            <p class="text-stone-500 text-[10px]">Store Manager</p>
+          </div>
+        </div>
+        <button onclick="resetToDefaults()" title="Reset Sample Data" class="text-stone-500 hover:text-[#D4AF37] transition-colors p-1">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- CONTENT AREA -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-[#FBF9F5]">
+      
+      <!-- Top Action Bar -->
+      <header class="bg-white border-b border-stone-200 px-8 py-4 flex justify-between items-center shadow-sm">
+        <div>
+          <h2 id="page-title" class="font-serif-luxury text-2xl font-semibold text-stone-900">Overview Dashboard</h2>
+          <p id="page-subtitle" class="text-xs text-stone-500 mt-0.5">Real-time luxury sales analytics & operations management</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <!-- Quick Action Buttons -->
+          <button onclick="openNewOrderModal()" class="bg-[#121417] hover:bg-stone-800 text-white text-xs px-3.5 py-2 rounded-lg font-medium transition-all flex items-center space-x-1.5 shadow-sm border border-stone-800">
+            <i class="fa-solid fa-plus text-[#D4AF37]"></i>
+            <span>New Order</span>
+          </button>
+          <button onclick="openNewProductModal()" class="bg-[#D4AF37] hover:bg-[#c29f2e] text-stone-900 text-xs px-3.5 py-2 rounded-lg font-semibold transition-all flex items-center space-x-1.5 shadow-sm">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Jewellery Item</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- DEMO BANNER FOR LOCALSTORAGE EXPLANATION -->
+      <div id="demoBanner" class="bg-amber-50/90 border-b border-amber-200/80 px-8 py-2.5 text-xs text-amber-900 flex justify-between items-center transition-all">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-circle-info text-[#D4AF37] text-sm"></i>
+          <span><strong>LocalStorage Active Engine:</strong> All modifications (adding products, updating orders, status changes) are saved directly inside your browser. No server connection is required.</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="resetToDefaults()" class="text-amber-800 hover:text-amber-950 font-medium underline">Restore Sample Data</button>
+          <button onclick="document.getElementById('demoBanner').style.display='none'" class="text-amber-700 hover:text-amber-950"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- MAIN SCROLLABLE VIEW CONTAINER -->
+      <div class="flex-1 overflow-y-auto p-8" id="view-container">
+
+        <!-- TAB 1: OVERVIEW DASHBOARD -->
+        <div id="view-overview" class="tab-content space-y-8">
+          
+          <!-- Key Metric Cards Row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Total Sales -->
+            <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-2 h-full bg-[#D4AF37]"></div>
+              <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Total Sales Revenue</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-stone-900 mt-2" id="dash-total-sales">₹0</h3>
+              <div class="flex items-center space-x-1 mt-3 text-xs text-emerald-600 font-medium">
+                <i class="fa-solid fa-arrow-up-right"></i>
+                <span>+18.4% vs last month</span>
+              </div>
+            </div>
+
+            <!-- Total Orders -->
+            <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+              <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Total Orders</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-stone-900 mt-2" id="dash-total-orders">0</h3>
+              <div class="flex items-center space-x-1 mt-3 text-xs text-emerald-600 font-medium">
+                <i class="fa-solid fa-arrow-up-right"></i>
+                <span>+12.1% sales volume</span>
+              </div>
+            </div>
+
+            <!-- Average Order Value -->
+            <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+              <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Avg. Order Value (AOV)</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-stone-900 mt-2" id="dash-aov">₹0</h3>
+              <div class="flex items-center space-x-1 mt-3 text-xs text-amber-600 font-medium">
+                <i class="fa-solid fa-minus"></i>
+                <span>Stable fine jewellery tier</span>
+              </div>
+            </div>
+
+            <!-- Open / Processing Orders -->
+            <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+              <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Open Orders</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-stone-900 mt-2" id="dash-open-orders">0</h3>
+              <div class="flex items-center space-x-1 mt-3 text-xs text-blue-600 font-medium">
+                <i class="fa-solid fa-clock"></i>
+                <span>Requires fulfillment</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Visualization Section -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Last 7 Days Revenue Bar Chart Visualization -->
+            <div class="lg:col-span-2 bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+              <div class="flex justify-between items-center mb-6">
+                <div>
+                  <h4 class="font-serif-luxury text-xl font-bold text-stone-900">7-Day Revenue Trends</h4>
+                  <p class="text-xs text-stone-500">Sales performance across recent luxury orders</p>
+                </div>
+                <span class="text-xs text-[#D4AF37] font-semibold bg-amber-50 px-2.5 py-1 rounded border border-amber-200">Daily Revenue</span>
+              </div>
+              <div class="h-56 flex items-end justify-between gap-3 pt-6 border-b border-stone-100 px-2" id="salesChartBars">
+                <!-- Dynamically Generated Bars -->
+              </div>
+              <div class="flex justify-between text-xs text-stone-500 mt-3 px-2" id="salesChartLabels">
+                <!-- Day Labels -->
+              </div>
+            </div>
+
+            <!-- Order Status Breakdown -->
+            <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <h4 class="font-serif-luxury text-xl font-bold text-stone-900 mb-1">Order Status Mix</h4>
+                <p class="text-xs text-stone-500 mb-6">Fulfillment progress tracking</p>
+                <div class="space-y-4" id="statusDistributionBars">
+                  <!-- Dynamically inserted bars -->
+                </div>
+              </div>
+              <div class="mt-6 pt-4 border-t border-stone-100 flex justify-between items-center text-xs text-stone-500">
+                <span>925 Sterling Quality Guaranteed</span>
+                <a href="#orders" onclick="switchTab('orders')" class="text-[#D4AF37] hover:underline font-medium">Manage All &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Orders Table -->
+          <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-stone-200 flex justify-between items-center">
+              <div>
+                <h4 class="font-serif-luxury text-xl font-bold text-stone-900">Recent Customer Orders</h4>
+                <p class="text-xs text-stone-500">Latest activity from arapcb.com</p>
+              </div>
+              <a href="#orders" onclick="switchTab('orders')" class="text-xs text-[#D4AF37] hover:text-[#AA8721] font-semibold flex items-center space-x-1">
+                <span>View All Orders</span>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+              </a>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-stone-50 text-[11px] font-bold uppercase tracking-wider text-stone-500 border-b border-stone-200">
+                    <th class="p-4 pl-6">Order ID</th>
+                    <th class="p-4">Customer</th>
+                    <th class="p-4">Items</th>
+                    <th class="p-4">Total Amount</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4 text-right pr-6">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-orders-tbody" class="divide-y divide-stone-100 text-xs">
+                  <!-- JS Populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: PRODUCTS TAB -->
+        <div id="view-products" class="tab-content hidden space-y-6">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+            <div class="relative flex-1 w-full max-w-md">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-stone-400 text-xs"></i>
+              <input type="text" id="product-search" oninput="renderProducts()" placeholder="Search jewellery by title, SKU or metal grade..." class="w-full pl-9 pr-4 py-2 border border-stone-200 rounded-lg text-xs gold-border-focus">
+            </div>
+            <div class="flex items-center space-x-3 w-full sm:w-auto">
+              <select id="product-category-filter" onchange="renderProducts()" class="border border-stone-200 rounded-lg py-2 px-3 text-xs bg-white text-stone-700">
+                <option value="ALL">All Collections</option>
+                <option value="Rings">Rings</option>
+                <option value="Necklaces">Necklaces</option>
+                <option value="Earrings">Earrings</option>
+                <option value="Bracelets">Bracelets</option>
+                <option value="Pendants">Pendants</option>
+              </select>
+              <button onclick="openNewProductModal()" class="bg-[#D4AF37] hover:bg-[#c29f2e] text-stone-900 text-xs px-4 py-2 rounded-lg font-semibold whitespace-nowrap">
+                + Add New Jewellery Item
+              </button>
+            </div>
+          </div>
+
+          <!-- Product Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid">
+            <!-- Dynamic Cards -->
+          </div>
+        </div>
+
+        <!-- TAB 3: INVENTORY TAB -->
+        <div id="view-inventory" class="tab-content hidden space-y-6">
+          <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-stone-200 flex flex-wrap justify-between items-center gap-4">
+              <div>
+                <h4 class="font-serif-luxury text-xl font-bold text-stone-900">Stock & Metal Weight Audit</h4>
+                <p class="text-xs text-stone-500">Monitor raw 925 sterling silver weights and unit inventory</p>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs text-stone-500">Low Stock Alert Level:</span>
+                <span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full font-bold">&le; 5 units</span>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold uppercase text-[10px]">
+                    <th class="p-4 pl-6">SKU</th>
+                    <th class="p-4">Item Name</th>
+                    <th class="p-4">Silver Weight (g)</th>
+                    <th class="p-4">Unit Price</th>
+                    <th class="p-4">Stock Level</th>
+                    <th class="p-4">Stock Status</th>
+                    <th class="p-4 text-right pr-6">Quick Adjust</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-tbody" class="divide-y divide-stone-100">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: ORDERS TAB -->
+        <div id="view-orders" class="tab-content hidden space-y-6">
+          <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3 flex-1">
+              <input type="text" id="order-search" oninput="renderOrders()" placeholder="Search Order ID, Customer Name..." class="w-full max-w-xs px-3 py-2 border border-stone-200 rounded-lg text-xs gold-border-focus">
+              <select id="order-status-filter" onchange="renderOrders()" class="border border-stone-200 rounded-lg px-3 py-2 text-xs bg-white">
+                <option value="ALL">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Processing">Processing</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <button onclick="openNewOrderModal()" class="bg-[#121417] text-white px-4 py-2 rounded-lg text-xs font-semibold hover:bg-stone-800">
+              <i class="fa-solid fa-plus text-[#D4AF37] mr-1"></i> Create Manual Order
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold uppercase text-[10px]">
+                    <th class="p-4 pl-6">Order ID</th>
+                    <th class="p-4">Date</th>
+                    <th class="p-4">Customer</th>
+                    <th class="p-4">Payment Method</th>
+                    <th class="p-4">Total Amount</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4 text-right pr-6">Invoice & Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-tbody" class="divide-y divide-stone-100">
+                  <!-- Dynamic render -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: CUSTOMERS TAB -->
+        <div id="view-customers" class="tab-content hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <p class="text-xs uppercase text-stone-500 font-semibold">Total Client Base</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-stone-900 mt-2" id="cust-count">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <p class="text-xs uppercase text-stone-500 font-semibold">VIP Clients (&gt; ₹15,000)</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-amber-700 mt-2" id="cust-vip-count">0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <p class="text-xs uppercase text-stone-500 font-semibold">Repeat Order Rate</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-stone-900 mt-2">64%</h3>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-stone-200">
+              <h4 class="font-serif-luxury text-xl font-bold text-stone-900">Luxury Client Directory</h4>
+              <p class="text-xs text-stone-500">Purchasing history and contact profiles</p>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold uppercase text-[10px]">
+                    <th class="p-4 pl-6">Customer Name</th>
+                    <th class="p-4">Contact Info</th>
+                    <th class="p-4">Location</th>
+                    <th class="p-4">Orders Placed</th>
+                    <th class="p-4">Total Lifetime Value</th>
+                    <th class="p-4 text-right pr-6">Tier</th>
+                  </tr>
+                </thead>
+                <tbody id="customers-tbody" class="divide-y divide-stone-100">
+                  <!-- Populated JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: SHIPPING TAB -->
+        <div id="view-shipping" class="tab-content hidden space-y-6">
+          <div class="bg-white rounded-xl p-6 border border-stone-200 shadow-sm">
+            <h4 class="font-serif-luxury text-xl font-bold text-stone-900 mb-2">Jewellery Shipment Tracker</h4>
+            <p class="text-xs text-stone-500 mb-6">Insured express transit monitoring for sterling silver shipments</p>
+            <div class="space-y-4" id="shipping-list">
+              <!-- JS Populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 7: FINANCE TAB -->
+        <div id="view-finance" class="tab-content hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <p class="text-xs text-stone-500 uppercase font-semibold">Gross Revenue</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-emerald-700 mt-2" id="fin-gross">₹0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <p class="text-xs text-stone-500 uppercase font-semibold">Estimated Silver Metal Cost (COGS)</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-stone-800 mt-2" id="fin-cogs">₹0</h3>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <p class="text-xs text-stone-500 uppercase font-semibold">Est. Net Profit Margin</p>
+              <h3 class="font-serif-luxury text-3xl font-bold text-[#D4AF37] mt-2" id="fin-profit">₹0</h3>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+            <h4 class="font-serif-luxury text-xl font-bold text-stone-900 mb-4">GST Tax Breakdown (18% Jewellery Rate Standard)</h4>
+            <p class="text-xs text-stone-600 mb-4">Summary of collected GST on order transactions for quarterly tax filings.</p>
+            <div class="p-4 bg-stone-50 rounded-lg border border-stone-200 flex justify-between items-center text-sm">
+              <span>Total Calculated GST Collected:</span>
+              <span class="font-bold font-serif-luxury text-lg text-stone-900" id="fin-gst">₹0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 8: MARKETING TAB -->
+        <div id="view-marketing" class="tab-content hidden space-y-6">
+          <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+            <h4 class="font-serif-luxury text-xl font-bold text-stone-900 mb-2">Active Promotional Campaigns</h4>
+            <p class="text-xs text-stone-500 mb-6">Discount codes & marketing banners for arapcb.com</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="border border-stone-200 rounded-lg p-4 bg-stone-50 flex justify-between items-center">
+                <div>
+                  <span class="bg-[#D4AF37] text-stone-900 font-mono text-xs font-bold px-2 py-0.5 rounded">SILVER10</span>
+                  <p class="text-xs text-stone-600 mt-2">10% off luxury Sterling Necklaces</p>
+                </div>
+                <span class="text-xs font-semibold text-emerald-600">Active</span>
+              </div>
+              <div class="border border-stone-200 rounded-lg p-4 bg-stone-50 flex justify-between items-center">
+                <div>
+                  <span class="bg-[#D4AF37] text-stone-900 font-mono text-xs font-bold px-2 py-0.5 rounded">BRIDAL2026</span>
+                  <p class="text-xs text-stone-600 mt-2">Special gift pouch with rings</p>
+                </div>
+                <span class="text-xs font-semibold text-emerald-600">Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 9: ANALYTICS TAB -->
+        <div id="view-analytics" class="tab-content hidden space-y-6">
+          <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm text-center py-12">
+            <i class="fa-solid fa-chart-line text-4xl text-[#D4AF37] mb-3"></i>
+            <h4 class="font-serif-luxury text-2xl font-bold text-stone-900">Analytics & Demand Forecasting</h4>
+            <p class="text-xs text-stone-500 max-w-md mx-auto mt-2">Track top selling items, metal grade demands, and seasonal customer retention trends.</p>
+          </div>
+        </div>
+
+        <!-- TAB 10: DATA MANAGEMENT TAB -->
+        <div id="view-datamgmt" class="tab-content hidden space-y-6">
+          <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm space-y-4">
+            <h4 class="font-serif-luxury text-xl font-bold text-stone-900">LocalStorage & Data Controls</h4>
+            <p class="text-xs text-stone-500">Manage your stored database locally in this browser.</p>
+            <div class="flex flex-wrap gap-4 pt-2">
+              <button onclick="exportDataJSON()" class="bg-[#121417] text-white text-xs px-4 py-2 rounded-lg font-medium hover:bg-stone-800">
+                <i class="fa-solid fa-download mr-1.5 text-[#D4AF37]"></i> Backup JSON File
+              </button>
+              <button onclick="resetToDefaults()" class="bg-rose-50 text-rose-700 border border-rose-200 text-xs px-4 py-2 rounded-lg font-medium hover:bg-rose-100">
+                <i class="fa-solid fa-rotate-right mr-1.5"></i> Reset Default Silver Catalogue
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 11: SETTINGS TAB -->
+        <div id="view-settings" class="tab-content hidden space-y-6">
+          <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm space-y-4 max-w-2xl">
+            <h4 class="font-serif-luxury text-xl font-bold text-stone-900">Store Configurations</h4>
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1">Store Name</label>
+              <input type="text" value="ARA Silver Jewellery" readonly class="w-full text-xs p-2.5 border border-stone-200 bg-stone-50 rounded-lg">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1">Official E-Commerce Domain</label>
+              <input type="text" value="https://arapcb.com" readonly class="w-full text-xs p-2.5 border border-stone-200 bg-stone-50 rounded-lg text-blue-600">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-700 mb-1">GitHub Source Repository</label>
+              <input type="text" value="https://github.com/neerav100malhotra-design/ARA" readonly class="w-full text-xs p-2.5 border border-stone-200 bg-stone-50 rounded-lg text-stone-600">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL 1: PRINTABLE GST INVOICE MODAL -->
+  <div id="invoiceModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+      <div class="p-4 bg-[#121417] text-white flex justify-between items-center no-print">
+        <h3 class="font-serif-luxury text-lg font-bold text-[#D4AF37]">Tax Invoice Preview</h3>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.print()" class="bg-[#D4AF37] text-stone-900 px-3 py-1 rounded text-xs font-bold hover:bg-[#c29f2e]">
+            <i class="fa-solid fa-print mr-1"></i> Print Invoice
+          </button>
+          <button onclick="closeModal('invoiceModal')" class="text-stone-400 hover:text-white px-2">
+            <i class="fa-solid fa-xmark text-base"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Printable Container -->
+      <div id="printableInvoice" class="p-8 overflow-y-auto space-y-6 text-stone-900 bg-white text-xs">
+        <!-- Content inserted dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: NEW ITEM CREATION MODAL -->
+  <div id="productModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white w-full max-w-lg rounded-xl shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-serif-luxury text-xl font-bold text-stone-900">Add New Silver Jewellery Item</h3>
+        <button onclick="closeModal('productModal')" class="text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="productForm" onsubmit="saveProduct(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-stone-600">Product Title</label>
+          <input type="text" id="p-title" required placeholder="e.g. Royal Solitaire 925 Ring" class="w-full border p-2 rounded text-xs gold-border-focus">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600">Category</label>
+            <select id="p-category" class="w-full border p-2 rounded text-xs bg-white">
+              <option value="Rings">Rings</option>
+              <option value="Necklaces">Necklaces</option>
+              <option value="Earrings">Earrings</option>
+              <option value="Bracelets">Bracelets</option>
+              <option value="Pendants">Pendants</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600">Price (₹)</label>
+            <input type="number" id="p-price" required min="1" placeholder="3499" class="w-full border p-2 rounded text-xs gold-border-focus">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600">Silver Weight (Grams)</label>
+            <input type="number" step="0.1" id="p-weight" required placeholder="12.5" class="w-full border p-2 rounded text-xs gold-border-focus">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600">Initial Stock</label>
+            <input type="number" id="p-stock" required min="0" placeholder="15" class="w-full border p-2 rounded text-xs gold-border-focus">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-stone-600">Image URL</label>
+          <input type="url" id="p-image" placeholder="https://images.unsplash.com/photo-..." class="w-full border p-2 rounded text-xs gold-border-focus">
+        </div>
+        <div class="pt-3 flex justify-end space-x-2">
+          <button type="button" onclick="closeModal('productModal')" class="px-4 py-2 border rounded text-xs">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#D4AF37] hover:bg-[#c29f2e] text-stone-900 font-bold text-xs rounded">Save Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: NEW ORDER MODAL -->
+  <div id="orderModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white w-full max-w-lg rounded-xl shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-serif-luxury text-xl font-bold text-stone-900">Create New Customer Order</h3>
+        <button onclick="closeModal('orderModal')" class="text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="orderForm" onsubmit="saveOrder(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-stone-600">Customer Name</label>
+          <input type="text" id="o-customer" required placeholder="Priya Sharma" class="w-full border p-2 rounded text-xs gold-border-focus">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600">Email Address</label>
+            <input type="email" id="o-email" required placeholder="priya@example.com" class="w-full border p-2 rounded text-xs gold-border-focus">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600">Select Item</label>
+            <select id="o-product" class="w-full border p-2 rounded text-xs bg-white"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600">Payment Method</label>
+            <select id="o-payment" class="w-full border p-2 rounded text-xs bg-white">
+              <option value="UPI / Online">UPI / Online</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Cash on Delivery">Cash on Delivery</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-stone-600">City / Delivery Area</label>
+            <input type="text" id="o-city" required placeholder="Mumbai" class="w-full border p-2 rounded text-xs gold-border-focus">
+          </div>
+        </div>
+        <div class="pt-3 flex justify-end space-x-2">
+          <button type="button" onclick="closeModal('orderModal')" class="px-4 py-2 border rounded text-xs">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#121417] text-white font-bold text-xs rounded">Place Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: DEPLOYMENT JSZIP EXPORT MODAL -->
+  <div id="deployModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white w-full max-w-lg rounded-xl shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-file-zipper text-[#D4AF37] text-xl"></i>
+          <h3 class="font-serif-luxury text-xl font-bold text-stone-900">Export GitHub Pages Package</h3>
+        </div>
+        <button onclick="closeModal('deployModal')" class="text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="text-xs text-stone-600 leading-relaxed">
+        This tool generates a bundle containing individual files: <code class="bg-stone-100 text-amber-800 px-1 py-0.5 rounded">management.html</code>, <code class="bg-stone-100 text-amber-800 px-1 py-0.5 rounded">management.css</code>, <code class="bg-stone-100 text-amber-800 px-1 py-0.5 rounded">management.js</code>, and <code class="bg-stone-100 text-amber-800 px-1 py-0.5 rounded">README.md</code>.
+      </p>
+      <div class="p-3 bg-stone-50 border border-stone-200 rounded text-xs space-y-1">
+        <p class="font-semibold text-stone-800">Deployment Steps:</p>
+        <ol class="list-decimal list-inside text-stone-600 space-y-1">
+          <li>Download <strong>ARA_Business_Management_Portal.zip</strong>.</li>
+          <li>Unzip files to repository root at <a href="https://github.com/neerav100malhotra-design/ARA" target="_blank" class="text-blue-600 hover:underline">neerav100malhotra-design/ARA</a>.</li>
+          <li>Enable GitHub Pages under Repository Settings.</li>
+        </ol>
+      </div>
+      <div class="pt-2 flex justify-end space-x-2">
+        <button onclick="closeModal('deployModal')" class="px-4 py-2 border rounded text-xs">Close</button>
+        <button onclick="generateDeploymentZip()" class="px-5 py-2 bg-[#D4AF37] hover:bg-[#c29f2e] text-stone-900 font-bold text-xs rounded flex items-center space-x-1.5">
+          <i class="fa-solid fa-download"></i>
+          <span>Download Zip Package</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       ARA SILVER JEWELLERY - BUSINESS MANAGEMENT PORTAL ENGINE
+       ========================================================================== */
+
+    // DEFAULT REALISTIC DATA
+    const INITIAL_PRODUCTS = [
+      { id: 'ARA-P101', title: 'Royal Heritage 925 Silver Choker', category: 'Necklaces', price: 8499, weight: 34.5, stock: 8, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80' },
+      { id: 'ARA-P102', title: 'Celestial Solitaire Sterling Ring', category: 'Rings', price: 2999, weight: 6.2, stock: 18, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=400&q=80' },
+      { id: 'ARA-P103', title: 'Artisan Oxidised Silver Bangle Set', category: 'Bracelets', price: 5299, weight: 28.0, stock: 4, image: 'https://images.unsplash.com/photo-1611591475281-8d9924d46cb7?auto=format&fit=crop&w=400&q=80' },
+      { id: 'ARA-P104', title: 'Kundal Pearl & Sterling Jhumkas', category: 'Earrings', price: 3799, weight: 14.8, stock: 12, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=400&q=80' },
+      { id: 'ARA-P105', title: 'Lotus Emblem Pendant with Silver Chain', category: 'Pendants', price: 2499, weight: 8.4, stock: 2, image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=400&q=80' }
+    ];
+
+    const INITIAL_ORDERS = [
+      { id: 'ORD-9021', date: '2026-09-27', customer: 'Ananya Verma', email: 'ananya@gmail.com', city: 'Delhi', item: 'Royal Heritage 925 Silver Choker', amount: 8499, payment: 'UPI / Online', status: 'Processing' },
+      { id: 'ORD-9020', date: '2026-09-26', customer: 'Rohan Mehta', email: 'rohan.m@mumbai.in', city: 'Mumbai', item: 'Celestial Solitaire Sterling Ring', amount: 2999, payment: 'Credit Card', status: 'Shipped' },
+      { id: 'ORD-9019', date: '2026-09-25', customer: 'Kavita Reddy', email: 'kavita.r@hyderabad.com', city: 'Hyderabad', item: 'Artisan Oxidised Silver Bangle Set', amount: 5299, payment: 'Cash on Delivery', status: 'Delivered' },
+      { id: 'ORD-9018', date: '2026-09-24', customer: 'Siddharth Nair', email: 'snair@bangalore.org', city: 'Bangalore', item: 'Kundal Pearl & Sterling Jhumkas', amount: 3799, payment: 'UPI / Online', status: 'Delivered' },
+      { id: 'ORD-9017', date: '2026-09-23', customer: 'Meera Kapoor', email: 'meera.k@delhi.net', city: 'Chandigarh', item: 'Lotus Emblem Pendant with Silver Chain', amount: 2499, payment: 'Credit Card', status: 'Pending' }
+    ];
+
+    // LOCAL STORAGE INIT
+    function getProducts() {
+      const data = localStorage.getItem('ara_products');
+      return data ? JSON.parse(data) : INITIAL_PRODUCTS;
+    }
+    function saveProducts(data) {
+      localStorage.setItem('ara_products', JSON.stringify(data));
+    }
+
+    function getOrders() {
+      const data = localStorage.getItem('ara_orders');
+      return data ? JSON.parse(data) : INITIAL_ORDERS;
+    }
+    function saveOrders(data) {
+      localStorage.setItem('ara_orders', JSON.stringify(data));
+    }
+
+    // INITIALIZATION ON PAGE LOAD
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('ara_products')) saveProducts(INITIAL_PRODUCTS);
+      if (!localStorage.getItem('ara_orders')) saveOrders(INITIAL_ORDERS);
+      
+      refreshAllData();
+      populateOrderProductDropdown();
+    });
+
+    function refreshAllData() {
+      renderOverview();
+      renderProducts();
+      renderInventory();
+      renderOrders();
+      renderCustomers();
+      renderShipping();
+      renderFinance();
+    }
+
+    function resetToDefaults() {
+      if (confirm('Are you sure you want to reset all data back to original sample silver jewellery catalogue?')) {
+        saveProducts(INITIAL_PRODUCTS);
+        saveOrders(INITIAL_ORDERS);
+        refreshAllData();
+        alert('Data restored successfully!');
+      }
+    }
+
+    // TAB NAVIGATION
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('active', 'text-[#D4AF37]', 'bg-[#1C1F26]', 'border-l-2', 'border-[#D4AF37]');
+        el.classList.add('text-stone-400');
+      });
+
+      const activeTab = document.getElementById('view-' + tabId);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) {
+        activeNav.classList.add('active', 'text-[#D4AF37]', 'bg-[#1C1F26]', 'border-l-2', 'border-[#D4AF37]');
+        activeNav.classList.remove('text-stone-400');
+      }
+
+      // Update Header Title
+      const titles = {
+        overview: ['Overview Dashboard', 'Real-time luxury sales analytics & operations management'],
+        products: ['Silver Jewellery Catalogue', 'Manage product collections, metals & pricing'],
+        inventory: ['Inventory & Metal Weight Audit', 'Stock levels and sterling silver weight tracking'],
+        orders: ['Customer Orders Management', 'Track orders, payments & print GST tax invoices'],
+        customers: ['Client Profiles & VIP Directory', 'Silver collectors and purchasing history'],
+        shipping: ['Logistics & Courier Tracking', 'Insured shipment monitoring'],
+        finance: ['Revenue & Tax Analytics', 'COGS, profit margins and GST calculation'],
+        marketing: ['Promotions & Coupon Codes', 'Discount campaigns for arapcb.com'],
+        analytics: ['Performance Insights', 'Forecasting & product performance'],
+        datamgmt: ['LocalStorage Controls', 'Data export & system backups'],
+        settings: ['Store Configurations', 'External links & administrative info']
+      };
+
+      if (titles[tabId]) {
+        document.getElementById('page-title').textContent = titles[tabId][0];
+        document.getElementById('page-subtitle').textContent = titles[tabId][1];
+      }
+    }
+
+    // OVERVIEW DASHBOARD RENDERER
+    function renderOverview() {
+      const orders = getOrders();
+      const products = getProducts();
+
+      // Metrics
+      const totalSales = orders.reduce((sum, o) => sum + (o.status !== 'Cancelled' ? o.amount : 0), 0);
+      const totalCount = orders.length;
+      const avgValue = totalCount > 0 ? Math.round(totalSales / totalCount) : 0;
+      const openOrdersCount = orders.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
+
+      document.getElementById('dash-total-sales').textContent = '₹' + totalSales.toLocaleString('en-IN');
+      document.getElementById('dash-total-orders').textContent = totalCount;
+      document.getElementById('dash-aov').textContent = '₹' + avgValue.toLocaleString('en-IN');
+      document.getElementById('dash-open-orders').textContent = openOrdersCount;
+
+      // 7 Day Chart dynamic simulation
+      const chartBars = document.getElementById('salesChartBars');
+      const chartLabels = document.getElementById('salesChartLabels');
+      chartBars.innerHTML = '';
+      chartLabels.innerHTML = '';
+
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const sampleAmounts = [12400, 8500, 15900, 22000, 18400, 29000, totalSales > 0 ? (totalSales % 35000) + 12000 : 15000];
+      const maxVal = Math.max(...sampleAmounts);
+
+      sampleAmounts.forEach((amt, idx) => {
+        const heightPct = Math.round((amt / maxVal) * 100);
+        chartBars.innerHTML += `
+          <div class="flex-1 flex flex-col items-center h-full justify-end group relative">
+            <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 bg-stone-900 text-[#D4AF37] text-[10px] py-1 px-2 rounded shadow font-mono z-10 whitespace-nowrap">
+              ₹${amt.toLocaleString('en-IN')}
+            </div>
+            <div class="w-full max-w-[28px] bg-gradient-to-t from-[#AA8721] to-[#D4AF37] rounded-t transition-all duration-500 hover:brightness-110" style="height: ${heightPct}%"></div>
+          </div>
+        `;
+        chartLabels.innerHTML += `<span class="flex-1 text-center font-medium">${days[idx]}</span>`;
+      });
+
+      // Status Distribution
+      const statuses = ['Pending', 'Processing', 'Shipped', 'Delivered'];
+      const statusContainer = document.getElementById('statusDistributionBars');
+      statusContainer.innerHTML = '';
+
+      statuses.forEach(st => {
+        const cnt = orders.filter(o => o.status === st).length;
+        const pct = totalCount > 0 ? Math.round((cnt / totalCount) * 100) : 0;
+        statusContainer.innerHTML += `
+          <div>
+            <div class="flex justify-between text-xs mb-1 font-medium">
+              <span class="text-stone-700">${st}</span>
+              <span class="text-stone-500">${cnt} orders (${pct}%)</span>
+            </div>
+            <div class="w-full h-2 bg-stone-100 rounded-full overflow-hidden">
+              <div class="h-full bg-[#D4AF37]" style="width: ${pct}%"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      // Recent Orders Table
+      const recentTbody = document.getElementById('recent-orders-tbody');
+      recentTbody.innerHTML = '';
+      orders.slice(0, 5).forEach(o => {
+        recentTbody.innerHTML += `
+          <tr class="hover:bg-stone-50/80 transition-colors">
+            <td class="p-4 pl-6 font-mono font-semibold text-stone-900">${o.id}</td>
+            <td class="p-4 font-medium text-stone-800">${o.customer}</td>
+            <td class="p-4 text-stone-600 truncate max-w-[180px]">${o.item}</td>
+            <td class="p-4 font-semibold text-stone-900">₹${o.amount.toLocaleString('en-IN')}</td>
+            <td class="p-4">${getStatusBadge(o.status)}</td>
+            <td class="p-4 text-right pr-6">
+              <button onclick="openInvoiceModal('${o.id}')" class="text-stone-500 hover:text-[#D4AF37] font-medium text-xs border border-stone-200 px-2 py-1 rounded bg-white">Invoice</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function getStatusBadge(status) {
+      const styles = {
+        Pending: 'bg-amber-100 text-amber-800 border-amber-200',
+        Processing: 'bg-blue-100 text-blue-800 border-blue-200',
+        Shipped: 'bg-purple-100 text-purple-800 border-purple-200',
+        Delivered: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        Cancelled: 'bg-rose-100 text-rose-800 border-rose-200'
+      };
+      return `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${styles[status] || 'bg-stone-100 text-stone-700'}">${status}</span>`;
+    }
+
+    // PRODUCTS TAB
+    function renderProducts() {
+      const products = getProducts();
+      const search = document.getElementById('product-search').value.toLowerCase();
+      const category = document.getElementById('product-category-filter').value;
+      const grid = document.getElementById('products-grid');
+
+      grid.innerHTML = '';
+
+      const filtered = products.filter(p => {
+        const matchesSearch = p.title.toLowerCase().includes(search) || p.id.toLowerCase().includes(search);
+        const matchesCat = category === 'ALL' || p.category === category;
+        return matchesSearch && matchesCat;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-stone-400 text-xs">No silver jewellery items matched your query.</div>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        grid.innerHTML += `
+          <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden flex flex-col group">
+            <div class="h-48 overflow-hidden bg-stone-100 relative">
+              <img src="${p.image}" alt="${p.title}" onerror="this.src='https://placehold.co/400x300/f5f5f5/a3a3a3?text=ARA+925+Silver'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute top-2 right-2 bg-[#121417]/80 backdrop-blur text-[#D4AF37] text-[10px] px-2 py-0.5 rounded font-mono border border-[#D4AF37]/30">${p.id}</span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <span class="text-[10px] uppercase tracking-wider text-amber-800 font-bold">${p.category}</span>
+                <h5 class="font-serif-luxury text-base font-bold text-stone-900 line-clamp-1 mt-0.5">${p.title}</h5>
+                <p class="text-xs text-stone-500 mt-1"><i class="fa-solid fa-scale-balanced text-[10px] mr-1"></i> 925 Silver: ${p.weight}g</p>
+              </div>
+              <div class="pt-2 border-t border-stone-100 flex justify-between items-center">
+                <div>
+                  <span class="text-xs text-stone-400 block text-[10px]">Price</span>
+                  <span class="font-serif-luxury text-lg font-bold text-stone-900">₹${p.price.toLocaleString('en-IN')}</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs text-stone-400 block text-[10px]">In Stock</span>
+                  <span class="text-xs font-bold ${p.stock <= 5 ? 'text-rose-600' : 'text-stone-800'}">${p.stock} units</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // INVENTORY TAB
+    function renderInventory() {
+      const products = getProducts();
+      const tbody = document.getElementById('inventory-tbody');
+      tbody.innerHTML = '';
+
+      products.forEach((p, idx) => {
+        const isLow = p.stock <= 5;
+        tbody.innerHTML += `
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 pl-6 font-mono text-stone-600 font-semibold">${p.id}</td>
+            <td class="p-4 font-semibold text-stone-800">${p.title}</td>
+            <td class="p-4 text-stone-600">${p.weight} g</td>
+            <td class="p-4 font-semibold text-stone-900">₹${p.price.toLocaleString('en-IN')}</td>
+            <td class="p-4 font-bold ${isLow ? 'text-rose-600' : 'text-stone-900'}">${p.stock}</td>
+            <td class="p-4">
+              ${isLow ? `<span class="px-2 py-0.5 bg-rose-100 text-rose-800 text-[10px] rounded font-bold">Low Stock</span>` : `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] rounded font-bold">Optimal</span>`}
+            </td>
+            <td class="p-4 text-right pr-6 space-x-1">
+              <button onclick="updateStock('${p.id}', -1)" class="w-6 h-6 rounded bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold">-</button>
+              <button onclick="updateStock('${p.id}', 1)" class="w-6 h-6 rounded bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold">+</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function updateStock(id, delta) {
+      const products = getProducts();
+      const item = products.find(p => p.id === id);
+      if (item) {
+        item.stock = Math.max(0, item.stock + delta);
+        saveProducts(products);
+        renderInventory();
+        renderProducts();
+      }
+    }
+
+    // ORDERS TAB RENDERER
+    function renderOrders() {
+      const orders = getOrders();
+      const search = document.getElementById('order-search').value.toLowerCase();
+      const filter = document.getElementById('order-status-filter').value;
+      const tbody = document.getElementById('orders-tbody');
+      tbody.innerHTML = '';
+
+      const filtered = orders.filter(o => {
+        const matchSearch = o.id.toLowerCase().includes(search) || o.customer.toLowerCase().includes(search);
+        const matchStatus = filter === 'ALL' || o.status === filter;
+        return matchSearch && matchStatus;
+      });
+
+      filtered.forEach(o => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 pl-6 font-mono font-semibold text-stone-900">${o.id}</td>
+            <td class="p-4 text-stone-500 text-[11px]">${o.date}</td>
+            <td class="p-4">
+              <p class="font-semibold text-stone-800">${o.customer}</p>
+              <p class="text-[10px] text-stone-400">${o.email}</p>
+            </td>
+            <td class="p-4 text-stone-600">${o.payment}</td>
+            <td class="p-4 font-semibold text-stone-900">₹${o.amount.toLocaleString('en-IN')}</td>
+            <td class="p-4">
+              <select onchange="changeOrderStatus('${o.id}', this.value)" class="text-xs border rounded px-2 py-1 bg-white font-medium">
+                <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+                <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
+                <option value="Shipped" ${o.status==='Shipped'?'selected':''}>Shipped</option>
+                <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
+              </select>
+            </td>
+            <td class="p-4 text-right pr-6 space-x-2">
+              <button onclick="openInvoiceModal('${o.id}')" class="bg-stone-900 hover:bg-black text-[#D4AF37] px-2.5 py-1 rounded text-xs font-semibold">
+                <i class="fa-solid fa-file-invoice mr-1"></i> GST Invoice
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function changeOrderStatus(orderId, newStatus) {
+      const orders = getOrders();
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+        saveOrders(orders);
+        renderOverview();
+      }
+    }
+
+    // CUSTOMERS TAB RENDERER
+    function renderCustomers() {
+      const orders = getOrders();
+      const tbody = document.getElementById('customers-tbody');
+      tbody.innerHTML = '';
+
+      // Aggregate customers
+      const custMap = {};
+      orders.forEach(o => {
+        if (!custMap[o.email]) {
+          custMap[o.email] = { name: o.customer, email: o.email, city: o.city, count: 0, total: 0 };
+        }
+        custMap[o.email].count += 1;
+        if (o.status !== 'Cancelled') custMap[o.email].total += o.amount;
+      });
+
+      const custs = Object.values(custMap);
+      document.getElementById('cust-count').textContent = custs.length;
+      document.getElementById('cust-vip-count').textContent = custs.filter(c => c.total >= 15000).length;
+
+      custs.forEach(c => {
+        const isVip = c.total >= 15000;
+        tbody.innerHTML += `
+          <tr class="hover:bg-stone-50">
+            <td class="p-4 pl-6 font-semibold text-stone-900">${c.name}</td>
+            <td class="p-4 text-stone-500">${c.email}</td>
+            <td class="p-4 text-stone-700">${c.city}</td>
+            <td class="p-4 font-bold text-stone-800">${c.count}</td>
+            <td class="p-4 font-semibold text-stone-900">₹${c.total.toLocaleString('en-IN')}</td>
+            <td class="p-4 text-right pr-6">
+              ${isVip ? `<span class="bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-amber-300"><i class="fa-solid fa-crown text-[9px] mr-1"></i> VIP Client</span>` : `<span class="bg-stone-100 text-stone-600 px-2.5 py-0.5 rounded-full text-[10px] font-medium">Regular</span>`}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // SHIPPING TAB
+    function renderShipping() {
+      const orders = getOrders().filter(o => o.status === 'Shipped' || o.status === 'Processing');
+      const list = document.getElementById('shipping-list');
+      list.innerHTML = '';
+
+      if (orders.length === 0) {
+        list.innerHTML = `<p class="text-xs text-stone-400 py-6 text-center">No active shipments in transit.</p>`;
+        return;
+      }
+
+      orders.forEach(o => {
+        list.innerHTML += `
+          <div class="border border-stone-200 rounded-lg p-4 flex flex-wrap justify-between items-center gap-4 bg-stone-50/50">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="font-mono font-bold text-stone-900">${o.id}</span>
+                <span class="text-xs text-stone-500">via BlueDart Courier Express</span>
+              </div>
+              <p class="text-xs text-stone-700 mt-1">Recipient: <strong>${o.customer}</strong> (${o.city})</p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-stone-500 block">Tracking ID</span>
+              <span class="font-mono text-xs font-bold text-[#D4AF37]">BD-925-${Math.floor(100000 + Math.random()*900000)}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // FINANCE TAB
+    function renderFinance() {
+      const orders = getOrders();
+      const validOrders = orders.filter(o => o.status !== 'Cancelled');
+      
+      const gross = validOrders.reduce((sum, o) => sum + o.amount, 0);
+      const estCogs = Math.round(gross * 0.42); // Estimated silver material & craftsmanship
+      const netProfit = gross - estCogs;
+      const gstAmount = Math.round(gross * 0.18); // 18% standard GST
+
+      document.getElementById('fin-gross').textContent = '₹' + gross.toLocaleString('en-IN');
+      document.getElementById('fin-cogs').textContent = '₹' + estCogs.toLocaleString('en-IN');
+      document.getElementById('fin-profit').textContent = '₹' + netProfit.toLocaleString('en-IN');
+      document.getElementById('fin-gst').textContent = '₹' + gstAmount.toLocaleString('en-IN');
+    }
+
+    // INVOICE MODAL SYSTEM
+    function openInvoiceModal(orderId) {
+      const order = getOrders().find(o => o.id === orderId);
+      if (!order) return;
+
+      const gstRate = 0.18;
+      const basePrice = Math.round(order.amount / (1 + gstRate));
+      const gstVal = order.amount - basePrice;
+
+      const container = document.getElementById('printableInvoice');
+      container.innerHTML = `
+        <div class="flex justify-between items-start border-b border-stone-200 pb-6">
+          <div>
+            <h1 class="font-serif-luxury text-3xl font-bold tracking-widest text-stone-900">ARA</h1>
+            <p class="text-[10px] uppercase tracking-widest text-[#D4AF37] font-bold">Silver Jewellery</p>
+            <p class="text-[11px] text-stone-500 mt-2">Official Portal: <a href="https://arapcb.com" class="text-blue-600 underline">arapcb.com</a></p>
+            <p class="text-[11px] text-stone-500">GSTIN: 07AAAAA0000A1Z5</p>
+          </div>
+          <div class="text-right">
+            <h2 class="font-serif-luxury text-xl font-bold text-stone-800 uppercase">Tax Invoice</h2>
+            <p class="font-mono text-stone-600 mt-1">Invoice #: ${order.id}</p>
+            <p class="text-stone-500 text-[11px]">Date: ${order.date}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 pt-2">
+          <div>
+            <p class="text-[10px] font-bold uppercase text-stone-400">Billed To:</p>
+            <p class="font-bold text-stone-900 text-sm mt-0.5">${order.customer}</p>
+            <p class="text-stone-600">${order.email}</p>
+            <p class="text-stone-600">${order.city}, India</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] font-bold uppercase text-stone-400">Payment Status:</p>
+            <p class="font-semibold text-emerald-700 text-sm mt-0.5">Paid via ${order.payment}</p>
+          </div>
+        </div>
+
+        <table class="w-full text-left border-collapse my-6">
+          <thead>
+            <tr class="border-b-2 border-stone-800 text-[10px] uppercase text-stone-600 font-bold">
+              <th class="py-2">Item Description</th>
+              <th class="py-2 text-center">Metal Grade</th>
+              <th class="py-2 text-right">Base Amount</th>
+              <th class="py-2 text-right">GST (18%)</th>
+              <th class="py-2 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-100">
+            <tr>
+              <td class="py-3 font-semibold text-stone-900">${order.item}</td>
+              <td class="py-3 text-center text-stone-600">925 Sterling</td>
+              <td class="py-3 text-right">₹${basePrice.toLocaleString('en-IN')}</td>
+              <td class="py-3 text-right">₹${gstVal.toLocaleString('en-IN')}</td>
+              <td class="py-3 text-right font-bold text-stone-900">₹${order.amount.toLocaleString('en-IN')}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="border-t border-stone-200 pt-4 flex justify-between items-center">
+          <div class="text-[10px] text-stone-500 max-w-xs">
+            Thank you for choosing ARA Silver Jewellery. Every piece is certified 925 Sterling Silver.
+          </div>
+          <div class="text-right">
+            <p class="text-xs text-stone-500">Grand Total:</p>
+            <p class="font-serif-luxury text-2xl font-bold text-stone-900">₹${order.amount.toLocaleString('en-IN')}</p>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('invoiceModal').classList.remove('hidden');
+      document.getElementById('invoiceModal').classList.add('flex');
+    }
+
+    // NEW ITEM MODAL HANDLERS
+    function openNewProductModal() {
+      document.getElementById('productModal').classList.remove('hidden');
+      document.getElementById('productModal').classList.add('flex');
+    }
+
+    function saveProduct(e) {
+      e.preventDefault();
+      const products = getProducts();
+      const newId = 'ARA-P' + (101 + products.length);
+      const newItem = {
+        id: newId,
+        title: document.getElementById('p-title').value,
+        category: document.getElementById('p-category').value,
+        price: parseFloat(document.getElementById('p-price').value),
+        weight: parseFloat(document.getElementById('p-weight').value),
+        stock: parseInt(document.getElementById('p-stock').value),
+        image: document.getElementById('p-image').value || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80'
+      };
+
+      products.unshift(newItem);
+      saveProducts(products);
+      closeModal('productModal');
+      document.getElementById('productForm').reset();
+      refreshAllData();
+      populateOrderProductDropdown();
+    }
+
+    // NEW ORDER MODAL HANDLERS
+    function openNewOrderModal() {
+      document.getElementById('orderModal').classList.remove('hidden');
+      document.getElementById('orderModal').classList.add('flex');
+    }
+
+    function populateOrderProductDropdown() {
+      const select = document.getElementById('o-product');
+      select.innerHTML = '';
+      getProducts().forEach(p => {
+        select.innerHTML += `<option value="${p.title}">${p.title} (₹${p.price})</option>`;
+      });
+    }
+
+    function saveOrder(e) {
+      e.preventDefault();
+      const products = getProducts();
+      const orders = getOrders();
+      const selectedTitle = document.getElementById('o-product').value;
+      const matchedProd = products.find(p => p.title === selectedTitle);
+      const price = matchedProd ? matchedProd.price : 3999;
+
+      const newOrder = {
+        id: 'ORD-' + (9022 + orders.length),
+        date: new Date().toISOString().split('T')[0],
+        customer: document.getElementById('o-customer').value,
+        email: document.getElementById('o-email').value,
+        city: document.getElementById('o-city').value,
+        item: selectedTitle,
+        amount: price,
+        payment: document.getElementById('o-payment').value,
+        status: 'Pending'
+      };
+
+      orders.unshift(newOrder);
+      saveOrders(orders);
+      closeModal('orderModal');
+      document.getElementById('orderForm').reset();
+      refreshAllData();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+      document.getElementById(id).classList.remove('flex');
+    }
+
+    function exportDataJSON() {
+      const payload = {
+        products: getProducts(),
+        orders: getOrders(),
+        exportedAt: new Date().toISOString()
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "ARA_Jewellery_Data_Backup.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // DEPLOYMENT MODAL & JSZIP GENERATOR
+    function openDeploymentModal() {
+      document.getElementById('deployModal').classList.remove('hidden');
+      document.getElementById('deployModal').classList.add('flex');
+    }
+
+    function generateDeploymentZip() {
+      const zip = new JSZip();
+
+      // management.html content
+      const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARA Silver Jewellery - Management Portal</title>
+  <link rel="stylesheet" href="management.css">
+  <script src="https://cdn.tailwindcss.com"><\/script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#FBF9F5] text-stone-900 font-sans">
+  <div class="p-8 text-center">
+    <h1 class="text-3xl font-bold font-serif">ARA Silver Jewellery Management</h1>
+    <p class="text-stone-600 mt-2">Official Operations Portal linked to <a href="https://arapcb.com" class="text-amber-700 underline">arapcb.com</a></p>
+  </div>
+  <script src="management.js"><\/script>
+</body>
+</html>`;
+
+      // management.css content
+      const cssContent = `/* ARA Silver Jewellery Custom Aesthetics */
+body {
+  background-color: #FBF9F5;
+  color: #1C1917;
+}
+.gold-text {
+  color: #D4AF37;
+}`;
+
+      // management.js content
+      const jsContent = `console.log("ARA Silver Jewellery Management System initialized.");`;
+
+      // README.md content
+      const readmeContent = `# ARA Silver Jewellery - Business Management Portal
+
+Official administrative dashboard and backend operational suite for **ARA Silver Jewellery** ([arapcb.com](https://arapcb.com)).
+
+## Features
+- Real-time sales overview and metric visualizer.
+- Inventory audit tracking 925 sterling silver weights in grams.
+- Customer order processing and printable GST tax invoice generator.
+- LocalStorage persistence engine.
+
+## GitHub Pages Deployment
+1. Upload these files directly to the root directory of [neerav100malhotra-design/ARA](https://github.com/neerav100malhotra-design/ARA).
+2. Go to **Settings > Pages** and set source branch to \`main\`.
+`;
+
+      zip.file("management.html", htmlContent);
+      zip.file("management.css", cssContent);
+      zip.file("management.js", jsContent);
+      zip.file("README.md", readmeContent);
+
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.href = URL.createObjectURL(content);
+        downloadAnchor.download = "ARA_Business_Management_Portal.zip";
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+      });
+    }
+  </script>
+</body>
+</html>
