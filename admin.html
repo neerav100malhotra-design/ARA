@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARA Admin — Product Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="store-additions.css">
+  <style>
+    body.admin-page { background: var(--bg, #f7f5f1); color: var(--ink, #222); }
+    .admin-wrap { max-width: 1100px; margin: 0 auto; padding: 36px 20px 70px; }
+    .admin-top { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:28px; }
+    .admin-top h1 { margin:0; font-size:clamp(28px,4vw,42px); }
+    .admin-layout { display:grid; grid-template-columns:minmax(280px, .8fr) minmax(0, 1.2fr); gap:24px; align-items:start; }
+    .admin-card { background:#fff; border:1px solid #e6e1d9; border-radius:16px; padding:22px; }
+    .admin-form { display:grid; gap:14px; }
+    .admin-form label { display:grid; gap:6px; font-size:14px; }
+    .admin-form input, .admin-form select, .admin-form textarea { width:100%; padding:11px 12px; border:1px solid #d8d3cb; border-radius:8px; font:inherit; }
+    .admin-form textarea { min-height:90px; resize:vertical; }
+    .admin-list { display:grid; gap:12px; }
+    .admin-product { display:grid; grid-template-columns:78px 1fr auto; gap:14px; align-items:center; padding:12px; border:1px solid #e8e4de; border-radius:12px; }
+    .admin-product img { width:78px; height:78px; object-fit:cover; border-radius:8px; background:#f2f0ec; }
+    .admin-product h3 { margin:0 0 5px; font-size:16px; }
+    .admin-product p { margin:0; color:#666; font-size:13px; }
+    .admin-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .admin-actions button { border:1px solid #d6d1c8; border-radius:8px; padding:8px 10px; background:#fff; cursor:pointer; }
+    .admin-actions .danger { color:#a32626; }
+    .admin-note { color:#655e55; font-size:13px; line-height:1.6; }
+    .admin-status { min-height:22px; color:#28633a; font-size:14px; }
+    @media(max-width:800px) { .admin-layout { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body class="admin-page">
+  <main class="admin-wrap">
+    <header class="admin-top">
+      <div>
+        <p class="eyebrow">ARA Silver Jewellery</p>
+        <h1>Product manager</h1>
+      </div>
+      <a class="button button-dark" href="index.html#shop">View storefront</a>
+    </header>
+
+    <p class="admin-note"><strong>Prototype warning:</strong> This dashboard stores products in this browser only. It has no login or access control. Do not use it for private or live inventory management until a secure backend is connected.</p>
+
+    <div class="admin-layout">
+      <section class="admin-card">
+        <h2 id="formHeading">Add a product</h2>
+        <form id="productForm" class="admin-form">
+          <input type="hidden" name="id">
+          <label>Product name<input name="name" required maxlength="120"></label>
+          <label>Category
+            <select name="category" required>
+              <option value="rings">Rings</option>
+              <option value="necklaces">Necklaces</option>
+              <option value="earrings">Earrings</option>
+              <option value="bracelets">Bracelets</option>
+              <option value="anklets">Anklets</option>
+            </select>
+          </label>
+          <label>Price (₹)<input name="price" type="number" min="1" step="1" required></label>
+          <label>Image URL or relative path<input name="image" placeholder="images/product-name.jpg" required></label>
+          <label>Description<textarea name="description" maxlength="500"></textarea></label>
+          <label><span><input name="active" type="checkbox" checked> Show product on storefront</span></label>
+          <button class="button button-dark" type="submit">Save product</button>
+          <button class="button" id="cancelEdit" type="button" hidden>Cancel edit</button>
+          <p id="adminStatus" class="admin-status" aria-live="polite"></p>
+        </form>
+        <p class="admin-note">To use an image file, upload it to your GitHub repository (for example, into <code>images/</code>) and enter its relative path here. External image URLs also work if publicly accessible.</p>
+      </section>
+
+      <section class="admin-card">
+        <h2>Products <span id="productCount"></span></h2>
+        <div id="adminProductList" class="admin-list"></div>
+      </section>
+    </div>
+  </main>
+  <script src="products.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
