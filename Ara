@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ARA — Silver Jewellery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--surface:#ffffff;--tile:#e9ecf0;--ink:#1c2430;--muted:#6a7482;--line:#dde1e7;--accent:#3d5a80;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--surface:#181d25;--tile:#222933;--ink:#eef1f5;--muted:#9aa4b2;--line:#2b3340;--accent:#9db8dc}}
+:root[data-theme="dark"]{--bg:#12161c;--surface:#181d25;--tile:#222933;--ink:#eef1f5;--muted:#9aa4b2;--line:#2b3340;--accent:#9db8dc}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:300;line-height:1.6}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font-family:'Italiana',Georgia,serif;font-size:30px;letter-spacing:.32em;padding-left:.32em}
+.nav ul{display:flex;gap:32px;list-style:none;margin:0;padding:0;font-size:15px}
+.nav a:hover{color:var(--accent)}
+.bag{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;padding:8px 16px;border-radius:999px;cursor:pointer}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:72px 0 64px}
+.hero h1{font-family:'Italiana',Georgia,serif;font-weight:400;font-size:clamp(44px,6.4vw,84px);line-height:1.02;margin:0 0 20px;letter-spacing:.01em}
+.hero p{max-width:420px;color:var(--muted);font-size:18px;margin:0 0 32px}
+.btn{display:inline-block;background:var(--ink);color:var(--bg);padding:14px 32px;border-radius:999px;font-size:15px;font-weight:400}
+.btn:hover{opacity:.88}
+.hero-art{aspect-ratio:1/1;background:radial-gradient(circle at 35% 30%,var(--surface),var(--tile) 70%);border-radius:50% 50% 8px 8px;display:grid;place-items:center}
+.hero-art svg{width:72%}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between;margin-bottom:28px}
+h2{font-family:'Italiana',Georgia,serif;font-weight:400;font-size:38px;margin:0}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{font:inherit;font-size:14px;background:none;color:var(--muted);border:1px solid var(--line);padding:7px 16px;border-radius:999px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:28px 22px}
+.card .img{aspect-ratio:1/1;background:var(--tile);border-radius:6px;display:grid;place-items:center;position:relative;overflow:hidden}
+.card .img svg{width:64%;transition:transform .35s}
+.card:hover .img svg{transform:scale(1.06)}
+.add{position:absolute;left:12px;right:12px;bottom:12px;background:var(--surface);color:var(--ink);border:0;font:inherit;font-size:14px;padding:10px;border-radius:999px;cursor:pointer;opacity:0;transform:translateY(6px);transition:.2s}
+.card:hover .add,.add:focus-visible{opacity:1;transform:none}
+@media (hover:none){.add{opacity:1;transform:none}}
+.card h3{font-weight:400;font-size:17px;margin:14px 0 0}
+.card .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:15px}
+.values{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin:96px 0;padding:40px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.values h3{font-weight:400;font-size:18px;margin:0 0 6px}
+.values p{margin:0;color:var(--muted);font-size:15px}
+.contact{text-align:center;padding-bottom:72px}
+.contact p{color:var(--muted);max-width:440px;margin:12px auto 32px}
+.contact dl{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin:0;padding:32px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.contact dt{color:var(--muted);font-size:14px}
+.contact dd{margin:4px 0 0;font-size:18px;font-weight:400}
+.contact dd a:hover{color:var(--accent)}
+@media (max-width:780px){.contact dl{grid-template-columns:1fr}}
+footer{padding:24px 0 48px;color:var(--muted);font-size:14px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:780px){.hero{grid-template-columns:1fr;padding:40px 0}.hero-art{order:-1;max-width:340px;width:100%;margin:0 auto}.nav ul{display:none}.values{grid-template-columns:1fr;gap:24px;margin:64px 0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a href="#top" class="logo" aria-label="ARA home">ARA</a>
+  <ul><li><a href="#shop">Shop</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul>
+  <button class="bag" id="bag" aria-label="Bag">Bag (0)</button>
+</div></header>
+
+<main id="top">
+<section class="wrap hero">
+  <div>
+    <h1>Pure silver, quietly made.</h1>
+    <p>Everyday 925 sterling silver jewellery in simple shapes, designed to be worn daily and kept for years.</p>
+    <a class="btn" href="#shop">Shop the collection</a>
+  </div>
+  <div class="hero-art" id="heroArt"></div>
+</section>
+
+<section class="wrap" id="shop">
+  <div class="bar">
+    <h2>The collection</h2>
+    <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+
+  <div class="values" id="about">
+    <div><h3>925 sterling silver</h3><p>Every piece is hallmarked and made from certified sterling silver.</p></div>
+    <div><h3>Skin-friendly finish</h3><p>Nickel-free and rhodium plated to resist tarnish.</p></div>
+    <div><h3>Free shipping and returns</h3><p>Free delivery across India and 15-day easy returns.</p></div>
+  </div>
+</section>
+</main>
+
+<section class="wrap contact" id="contact">
+  <h2>Contact us</h2>
+  <p>Questions about a piece, sizing or an order? Reach out and we will get back to you.</p>
+  <dl>
+    <div><dt>Name</dt><dd>Sample</dd></div>
+    <div><dt>Phone</dt><dd><a href="tel:sample">Sample</a></dd></div>
+    <div><dt>Email</dt><dd><a href="mailto:sample@gmail.com">sample@gmail.com</a></dd></div>
+  </dl>
+</section>
+
+<footer><div class="wrap foot">
+  <span>ARA Silver Jewellery · hello@ara-silver.example</span>
+  <span>Prototype with sample products</span>
+</div></footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+var G='<defs><linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8f9fb"/><stop offset=".35" stop-color="#b9c0ca"/><stop offset=".6" stop-color="#eef0f4"/><stop offset="1" stop-color="#8b94a1"/></linearGradient></defs>';
+var S='stroke="url(#s)" fill="none" stroke-linecap="round"';
+var gem='<circle cx="100" cy="46" r="11" fill="#dce8f7" stroke="url(#s)" stroke-width="3"/>';
+var art={
+ring:'<ellipse cx="100" cy="112" rx="46" ry="50" '+S+' stroke-width="11"/>'+gem,
+pendant:'<path d="M40 40 Q100 130 160 40" '+S+' stroke-width="4"/><path d="M100 96 C78 122 80 150 100 158 C120 150 122 122 100 96Z" fill="url(#s)"/><circle cx="100" cy="132" r="7" fill="#dce8f7"/>',
+earrings:'<g '+S+' stroke-width="7"><circle cx="66" cy="112" r="30"/><circle cx="134" cy="112" r="30"/></g><g fill="url(#s)"><circle cx="66" cy="70" r="6"/><circle cx="134" cy="70" r="6"/></g>',
+studs:'<g fill="url(#s)"><circle cx="66" cy="100" r="24"/><circle cx="134" cy="100" r="24"/></g><g fill="#dce8f7"><circle cx="66" cy="100" r="9"/><circle cx="134" cy="100" r="9"/></g>',
+bracelet:'<ellipse cx="100" cy="100" rx="62" ry="44" '+S+' stroke-width="9"/><ellipse cx="100" cy="100" rx="62" ry="44" stroke="#fff" stroke-opacity=".45" fill="none" stroke-width="2" stroke-dasharray="2 12" stroke-linecap="round"/>',
+chain:'<g '+S+' stroke-width="5"><ellipse cx="45" cy="100" rx="17" ry="9"/><ellipse cx="80" cy="100" rx="17" ry="9"/><ellipse cx="115" cy="100" rx="17" ry="9"/><ellipse cx="150" cy="100" rx="17" ry="9"/></g>',
+anklet:'<path d="M28 84 Q100 150 172 84" '+S+' stroke-width="4"/><g fill="url(#s)"><circle cx="64" cy="112" r="6"/><circle cx="100" cy="122" r="8"/><circle cx="136" cy="112" r="6"/></g>',
+band:'<ellipse cx="100" cy="112" rx="46" ry="50" '+S+' stroke-width="14"/><ellipse cx="100" cy="112" rx="46" ry="50" stroke="#fff" stroke-opacity=".5" fill="none" stroke-width="2"/>'
+};
+function svg(k){return '<svg viewBox="0 0 200 200" role="img" aria-hidden="true">'+G+art[k]+'</svg>'}
+var P=[
+['Luna Solitaire Ring','Rings','ring',2499],['Halo Pendant','Necklaces','pendant',2199],
+['Orbit Hoop Earrings','Earrings','earrings',1799],['Everyday Stud Set','Earrings','studs',999],
+['Curve Cuff Bracelet','Bracelets','bracelet',2899],['Rolo Chain Necklace','Necklaces','chain',1899],
+['Plain Band Ring','Rings','band',1499],['Charm Anklet','Anklets','anklet',1599]];
+var cats=['All'].concat(P.map(function(p){return p[1]}).filter(function(c,i,a){return a.indexOf(c)===i}));
+var count=0,cur='All';
+document.getElementById('heroArt').innerHTML=svg('ring');
+function render(){
+  document.getElementById('grid').innerHTML=P.filter(function(p){return cur==='All'||p[1]===cur}).map(function(p,i){
+    return '<article class="card"><div class="img">'+svg(p[2])+'<button class="add" data-n="'+p[0]+'">Add to bag</button></div><h3>'+p[0]+'</h3><div class="meta"><span>'+p[1]+'</span><span>₹'+p[3].toLocaleString('en-IN')+'</span></div></article>'}).join('');
+  document.getElementById('filters').innerHTML=cats.map(function(c){return '<button aria-pressed="'+(c===cur)+'" data-c="'+c+'">'+c+'</button>'}).join('');
+}
+document.addEventListener('click',function(e){
+  var f=e.target.closest('[data-c]');if(f){cur=f.dataset.c;render();return}
+  var a=e.target.closest('.add');if(a){count++;document.getElementById('bag').textContent='Bag ('+count+')';
+    var t=document.getElementById('toast');t.textContent=a.dataset.n+' added to bag';t.classList.add('show');clearTimeout(window._t);window._t=setTimeout(function(){t.classList.remove('show')},1800)}
+});
+render();
+</script>
+</body>
+</html>
