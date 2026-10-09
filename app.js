@@ -21,6 +21,8 @@
   }
 
   function getProducts() {
+    // Once Supabase responds, use its shared catalogue instead of this browser's old local copy.
+    if (Array.isArray(window.ARA_PRODUCTS_FROM_DB)) return window.ARA_PRODUCTS_FROM_DB;
     const saved = readJSON(PRODUCTS_KEY, null);
     return Array.isArray(saved) ? saved : (window.ARA_DEFAULT_PRODUCTS || []);
   }
@@ -284,6 +286,10 @@
   });
 
   $("#searchInput")?.addEventListener("input", renderProducts);
+  window.addEventListener("ara-products-loaded", () => {
+    renderProducts();
+    renderCart();
+  });
 
   document.addEventListener("submit", (event) => {
     if (event.target.id !== "checkoutForm") return;
