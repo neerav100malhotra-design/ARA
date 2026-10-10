@@ -115,6 +115,7 @@
     grid.innerHTML = filtered.map((product) => `
       <article class="product-card">
         <div class="product-image-wrap">
+          <a class="product-image-link" href="product.html?id=${encodeURIComponent(product.id)}" aria-label="View ${escapeHTML(product.name)}">
           <img
             class="product-image"
             src="${escapeHTML(product.image || "")}"
@@ -122,6 +123,7 @@
             loading="lazy"
             onerror="this.style.display='none'; this.parentElement.classList.add('image-missing')"
           >
+          </a>
         </div>
 
         <div class="product-info">
@@ -129,7 +131,7 @@
             ${escapeHTML(product.category || "")}
           </span>
 
-          <h3>${escapeHTML(product.name)}</h3>
+          <h3><a class="product-title-link" href="product.html?id=${encodeURIComponent(product.id)}">${escapeHTML(product.name)}</a></h3>
 
           <p class="product-description">
             ${escapeHTML(product.description || "")}
