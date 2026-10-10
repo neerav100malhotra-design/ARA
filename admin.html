@@ -4,280 +4,452 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f5f1">
-  <title>ARA Admin — Product Manager</title>
+  <meta name="theme-color" content="#292820">
+  <meta name="robots" content="noindex, nofollow">
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="store-additions.css">
+  <title>ARA | Product Administration</title>
 
   <style>
-    body.admin-page {
-      background: var(--bg, #f7f5f1);
-      color: var(--ink, #222);
+    :root {
+      --ink: #292820;
+      --muted: #77746c;
+      --paper: #f7f5f0;
+      --white: #ffffff;
+      --line: #e5e0d7;
+      --gold: #b59a68;
+      --danger: #a32626;
+      --success: #28633a;
+      --radius: 14px;
+      --shadow: 0 8px 30px rgba(41, 40, 32, 0.06);
     }
 
-    .admin-wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 28px 16px 60px;
-    }
-
-    .admin-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-
-    .admin-top h1 {
-      margin: 0;
-      font-size: clamp(28px, 4vw, 42px);
-    }
-
-    .admin-layout {
-      display: grid;
-      grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
-      gap: 24px;
-      align-items: start;
-    }
-
-    .admin-card {
-      min-width: 0;
-      background: #fff;
-      border: 1px solid #e6e1d9;
-      border-radius: 16px;
-      padding: 22px;
-    }
-
-    .admin-form {
-      display: grid;
-      gap: 15px;
-    }
-
-    .admin-form label {
-      display: grid;
-      gap: 7px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .admin-form input:not([type="checkbox"]),
-    .admin-form select,
-    .admin-form textarea {
-      width: 100%;
+    * {
       box-sizing: border-box;
-      padding: 12px;
-      border: 1px solid #d8d3cb;
-      border-radius: 9px;
-      background: #fff;
-      color: #222;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input, select, textarea {
       font: inherit;
     }
 
-    .admin-form input[type="file"] {
-      padding: 10px;
-    }
-
-    .admin-form textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
-
-    .admin-form input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      vertical-align: middle;
-      margin-right: 7px;
-    }
-
-    .admin-form button,
-    .admin-actions button {
-      min-height: 42px;
+    button {
       cursor: pointer;
     }
 
-    .admin-form button:disabled,
-    .admin-actions button:disabled {
-      cursor: wait;
-      opacity: .6;
-    }
-
-    .image-preview-wrap {
-      display: grid;
-      gap: 8px;
-    }
-
-    .image-preview {
-      width: 100%;
-      max-width: 260px;
-      aspect-ratio: 1;
-      object-fit: cover;
-      border-radius: 12px;
-      background: #f2f0ec;
-      border: 1px solid #e6e1d9;
-    }
-
-    .admin-note {
-      color: #655e55;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .admin-status {
-      min-height: 22px;
-      overflow-wrap: anywhere;
-      color: #28633a;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .admin-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .admin-product {
-      display: grid;
-      grid-template-columns: 78px minmax(0, 1fr);
-      gap: 12px;
-      align-items: start;
-      padding: 12px;
-      border: 1px solid #e8e4de;
-      border-radius: 12px;
-    }
-
-    .admin-product img {
-      width: 78px;
-      height: 78px;
-      object-fit: cover;
-      border-radius: 8px;
-      background: #f2f0ec;
-    }
-
-    .admin-product h3 {
-      margin: 0 0 5px;
-      font-size: 16px;
-      overflow-wrap: anywhere;
-    }
-
-    .admin-product p {
-      margin: 4px 0;
-      color: #666;
-      font-size: 13px;
-      overflow-wrap: anywhere;
-    }
-
-    .admin-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      grid-column: 1 / -1;
-    }
-
-    .admin-actions button {
-      padding: 8px 12px;
-      border: 1px solid #d6d1c8;
-      border-radius: 8px;
-      background: #fff;
-    }
-
-    .admin-actions .danger {
-      color: #a32626;
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
     }
 
     [hidden] {
       display: none !important;
     }
 
-    @media (max-width: 800px) {
+    .admin-top {
+      min-height: 76px;
+      padding: 16px clamp(16px, 5vw, 64px);
+      background: var(--ink);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      color: white;
+      text-decoration: none;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 30px;
+      letter-spacing: 0.2em;
+    }
+
+    .top-label {
+      display: block;
+      color: #d0c8b7;
+      font-size: 12px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .button {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 16px;
+      background: white;
+      color: var(--ink);
+    }
+
+    .button-dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .button-dark:hover {
+      background: #454338;
+    }
+
+    .button-danger {
+      color: var(--danger);
+      border-color: #e4c7c7;
+    }
+
+    .admin-wrap {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: 32px clamp(16px, 4vw, 48px) 64px;
+    }
+
+    .page-heading {
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+    }
+
+    h1, h2, h3, p {
+      overflow-wrap: anywhere;
+    }
+
+    h1 {
+      margin: 8px 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(30px, 4vw, 44px);
+      font-weight: 400;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .admin-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: clamp(18px, 3vw, 30px);
+      box-shadow: var(--shadow);
+    }
+
+    #adminLogin {
+      max-width: 480px;
+      margin: 20px auto 40px;
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.85fr) minmax(0, 1.15fr);
+      align-items: start;
+      gap: 24px;
+    }
+
+    .admin-form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .admin-form label {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 13px;
+      border: 1px solid #d9d3c8;
+      border-radius: 9px;
+      background: white;
+      color: var(--ink);
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(181, 154, 104, 0.16);
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--ink);
+    }
+
+    .active-row {
+      display: flex !important;
+      align-items: center;
+      gap: 10px !important;
+    }
+
+    .help {
+      margin: -8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .image-preview-wrap {
+      display: grid;
+      gap: 10px;
+    }
+
+    .image-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 220px;
+      max-height: 360px;
+      overflow: hidden;
+      border: 1px dashed #d9d3c8;
+      border-radius: 10px;
+      background: #f4f1eb;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .image-preview img {
+      display: block;
+      max-width: 100%;
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    .admin-status {
+      min-height: 24px;
+      margin: 12px 0 0;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .products-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .products-heading h2 {
+      margin: 0;
+    }
+
+    .product-count {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .admin-product {
+      display: grid;
+      grid-template-columns: 100px minmax(0, 1fr);
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+    }
+
+    .admin-product img,
+    .product-placeholder {
+      width: 100px;
+      height: 112px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #f4f1eb;
+    }
+
+    .product-placeholder {
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .admin-product h3 {
+      margin: 0 0 6px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 19px;
+      font-weight: 400;
+    }
+
+    .admin-product p {
+      margin: 4px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .admin-actions button {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: white;
+      color: var(--ink);
+    }
+
+    .admin-actions .danger {
+      color: var(--danger);
+    }
+
+    .admin-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
       .admin-layout {
         grid-template-columns: 1fr;
       }
 
-      .admin-card {
-        padding: 17px;
+      .admin-wrap {
+        padding-top: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .admin-top {
+        padding: 14px 16px;
+      }
+
+      .brand {
+        font-size: 25px;
+      }
+
+      .admin-product {
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 12px;
+        padding: 12px;
+      }
+
+      .admin-product img,
+      .product-placeholder {
+        width: 76px;
+        height: 90px;
+      }
+
+      .form-actions .button {
+        flex: 1;
       }
     }
   </style>
 </head>
 
-<body class="admin-page">
+<body>
+  <header class="admin-top">
+    <div>
+      <a class="brand" href="/" aria-label="ARA home">ARA</a>
+      <span class="top-label">Jewellery · Administration</span>
+    </div>
+    <div id="adminTopActions"></div>
+  </header>
+
   <main class="admin-wrap">
-    <header class="admin-top">
-      <div>
-        <p class="eyebrow">ARA Silver Jewellery</p>
-        <h1>Product manager</h1>
-      </div>
-
-      <a class="button button-dark" href="index.html#shop">
-        View storefront
-      </a>
-    </header>
-
-    <section id="adminLogin" class="admin-card" hidden>
-      <h2>ARA administrator login</h2>
-
-      <form id="loginForm" class="admin-form">
-        <label>
-          Email
-          <input
-            name="email"
-            type="email"
-            autocomplete="username"
-            required
-          >
-        </label>
-
-        <label>
-          Password
-          <input
-            name="password"
-            type="password"
-            autocomplete="current-password"
-            required
-          >
-        </label>
-
-        <button class="button button-dark" type="submit">
-          Sign in
-        </button>
-
-        <p id="loginStatus" class="admin-status" aria-live="polite"></p>
-      </form>
+    <section class="page-heading">
+      <span class="eyebrow">Private workspace</span>
+      <h1>Product management</h1>
+      <p class="muted">
+        Manage catalogue details, prices, visibility and product photography.
+      </p>
     </section>
 
-    <div id="adminWorkspace" class="admin-layout" hidden>
+    <!-- admin.js inserts the login form here. -->
+
+    <div class="admin-layout" hidden>
       <section class="admin-card">
         <h2 id="formHeading">Add a product</h2>
 
         <form id="productForm" class="admin-form">
-          <input type="hidden" name="id">
+          <input type="hidden" name="id" value="">
 
           <label>
             Product name
-            <input name="name" required maxlength="120">
+            <input
+              type="text"
+              name="name"
+              maxlength="160"
+              placeholder="e.g. Classic Silver Ring"
+              required
+            >
           </label>
 
           <label>
             Category
             <select name="category" required>
               <option value="rings">Rings</option>
-              <option value="necklaces">Necklaces</option>
               <option value="earrings">Earrings</option>
+              <option value="necklaces">Necklaces</option>
+              <option value="pendants">Pendants</option>
               <option value="bracelets">Bracelets</option>
               <option value="anklets">Anklets</option>
+              <option value="chains">Chains</option>
+              <option value="other">Other</option>
             </select>
           </label>
 
           <label>
             Price (₹)
             <input
-              name="price"
               type="number"
-              min="1"
-              step="1"
+              name="price"
+              min="0.01"
+              max="100000000"
+              step="0.01"
+              placeholder="1499"
               required
             >
           </label>
@@ -285,78 +457,193 @@
           <div class="image-preview-wrap">
             <label for="imageFile">Product image</label>
 
+            <div class="image-preview" id="imagePreview">
+              Image preview will appear here
+            </div>
+
             <input
               id="imageFile"
-              name="imageFile"
               type="file"
+              name="imageFile"
               accept="image/jpeg,image/png,image/webp"
             >
 
-            <img
-              id="imagePreview"
-              class="image-preview"
-              alt="Selected product image preview"
-              hidden
-            >
-
-            <p class="admin-note">
-              Select a JPG, PNG or WebP image from your iPad.
-              Maximum file size: 5 MB. Leave the file unselected
-              when editing to keep the current image.
+            <p class="help">
+              JPG, PNG or WebP. Maximum 5 MB. Select a file to upload it
+              to Supabase Storage when you save the product.
             </p>
           </div>
 
           <label>
             Or enter an existing image URL (optional)
             <input
-              name="image"
               type="url"
+              name="image"
               placeholder="https://example.com/image.jpg"
             >
           </label>
 
+          <p class="help">
+            If you select a new file, it takes priority over the URL field.
+            When editing, the current image is retained if no replacement
+            is selected and the URL field is left unchanged.
+          </p>
+
           <label>
             Description
-            <textarea name="description" maxlength="500"></textarea>
+            <textarea
+              name="description"
+              rows="4"
+              maxlength="2000"
+              placeholder="Describe the jewellery piece..."
+            ></textarea>
           </label>
 
-          <label>
-            <span>
-              <input name="active" type="checkbox" checked>
-              Show product on storefront
-            </span>
+          <label class="active-row">
+            <input type="checkbox" name="active" checked>
+            Visible on storefront
           </label>
 
-          <button
-            id="saveProduct"
-            class="button button-dark"
-            type="submit"
-          >
-            Save product
-          </button>
+          <div class="form-actions">
+            <button
+              type="submit"
+              class="button button-dark"
+            >
+              Save product
+            </button>
 
-          <button
-            class="button"
-            id="cancelEdit"
-            type="button"
-            hidden
-          >
-            Cancel edit
-          </button>
+            <button
+              type="button"
+              id="cancelEdit"
+              class="button"
+              hidden
+            >
+              Cancel edit
+            </button>
+          </div>
 
           <p id="adminStatus" class="admin-status" aria-live="polite"></p>
+
+          <p class="admin-note">
+            Sign in with your authorized ARA account to manage products.
+          </p>
         </form>
       </section>
 
       <section class="admin-card">
-        <h2>Products <span id="productCount"></span></h2>
-        <div id="adminProductList" class="admin-list"></div>
+        <div class="products-heading">
+          <h2>Catalogue</h2>
+          <span class="product-count">
+            Products <span id="productCount">(0)</span>
+          </span>
+        </div>
+
+        <div id="adminProductList" class="product-list" aria-live="polite">
+          <p class="muted">Products will appear here after loading.</p>
+        </div>
       </section>
     </div>
   </main>
 
+  <footer class="footer">
+    ARA Jewellery · Authorized administration only
+  </footer>
+
+  <!-- Load Supabase first, then your existing project configuration. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
-  <script src="admin.js"></script>
+  <script src="./supabase-config.js"></script>
+  <script src="./admin.js"></script>
+
+  <script>
+    // Preview the selected image locally before uploading.
+    (() => {
+      const fileInput = document.querySelector("#imageFile");
+      const preview = document.querySelector("#imagePreview");
+      const urlInput = document.querySelector('input[name="image"]');
+
+      if (!fileInput || !preview) return;
+
+      let currentObjectURL = null;
+
+      function showPreview(url, alt = "Product image preview") {
+        preview.replaceChildren();
+
+        if (!url) {
+          preview.textContent = "Image preview will appear here";
+          return;
+        }
+
+        const image = document.createElement("img");
+        image.src = url;
+        image.alt = alt;
+
+        image.onerror = () => {
+          preview.textContent =
+            "Preview unavailable. Check the image URL or selected file.";
+        };
+
+        preview.appendChild(image);
+      }
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files?.[0];
+
+        if (currentObjectURL) {
+          URL.revokeObjectURL(currentObjectURL);
+          currentObjectURL = null;
+        }
+
+        if (!file) {
+          showPreview(urlInput?.value || "");
+          return;
+        }
+
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+          fileInput.value = "";
+          showPreview("");
+          window.alert("Choose a JPG, PNG or WebP image.");
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          fileInput.value = "";
+          showPreview("");
+          window.alert("The image must be 5 MB or smaller.");
+          return;
+        }
+
+        currentObjectURL = URL.createObjectURL(file);
+        showPreview(currentObjectURL, file.name);
+      });
+
+      urlInput?.addEventListener("input", () => {
+        if (!fileInput.files?.length) {
+          showPreview(urlInput.value.trim());
+        }
+      });
+
+      // Preview an existing URL when a product is loaded for editing.
+      const observer = new MutationObserver(() => {
+        if (!fileInput.files?.length && urlInput?.value) {
+          showPreview(urlInput.value.trim());
+        }
+      });
+
+      if (urlInput) {
+        observer.observe(urlInput, {
+          attributes: true,
+          attributeFilter: ["value"]
+        });
+      }
+
+      document.querySelector("#cancelEdit")?.addEventListener("click", () => {
+        if (currentObjectURL) {
+          URL.revokeObjectURL(currentObjectURL);
+          currentObjectURL = null;
+        }
+        showPreview("");
+      });
+    })();
+  </script>
 </body>
 </html>
