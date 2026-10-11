@@ -104,6 +104,7 @@
       name: product.name || "",
       category: (product.category || "rings").toLowerCase(),
       price: Number(product.price) || 0,
+      stock: Number.isFinite(Number(product.stock)) ? Math.max(0, Math.floor(Number(product.stock))) : 0,
       image: product.image_url || "",
       images: Array.isArray(product.image_urls) && product.image_urls.length ? product.image_urls : (product.image_url ? [product.image_url] : []),
       description: product.description || "",
@@ -211,7 +212,7 @@
     const { data, error } = await client
       .from("products")
       .select(
-        "id,name,category,price,image_url,image_urls,description,is_active"
+        "id,name,category,price,stock,image_url,image_urls,description,is_active"
       )
       .order("id", { ascending: false });
 
@@ -259,6 +260,7 @@
           <p>
             ${escapeHTML(product.category)} ·
             ${money(product.price)} ·
+            Stock: ${product.stock} ·
             ${product.active ? "Visible" : "Hidden"}
           </p>
           <p>${escapeHTML(product.description)}</p>
@@ -396,11 +398,16 @@
     const rawId = String(data.get("id") || "");
     const name = String(data.get("name") || "").trim();
     const price = Number(data.get("price"));
+    const stock = Number(data.get("stock"));
     const category = String(data.get("category") || "rings");
     const description = String(data.get("description") || "").trim();
 
     if (!name || !Number.isFinite(price) || price <= 0) {
       status("Enter a product name and a valid price.", true);
+      return;
+    }
+    if (!Number.isInteger(stock) || stock < 0 || stock > 1000000) {
+      status("Stock must be a whole number from 0 to 1,000,000.", true);
       return;
     }
 
@@ -466,6 +473,7 @@
         name,
         category,
         price,
+        stock,
         image_url: imageUrl,
         image_urls: imageUrls,
         description,
@@ -544,7 +552,7 @@
         if (!product) return;
 
         for (const key of [
-          "id", "name", "category", "price", "description"
+          "id", "name", "category", "price", "stock", "description"
         ]) {
           if (form.elements[key]) {
             form.elements[key].value = product[key] ?? "";

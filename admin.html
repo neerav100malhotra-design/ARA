@@ -461,6 +461,12 @@
           </div>
 
           <label>
+            Stock quantity (pieces available)
+            <input type="number" name="stock" min="0" max="1000000" step="1" placeholder="Enter available pieces, e.g. 5" required>
+            <span class="help">Set this while adding the product photos. Enter the actual number of pieces available; use 0 only when sold out. You can change it later by editing the product.</span>
+          </label>
+
+          <label>
             Description
             <textarea
               name="description"

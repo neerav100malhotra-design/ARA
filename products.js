@@ -42,7 +42,7 @@ window.ARA_LOAD_PRODUCTS = async function () {
   try {
     const { data, error } = await client
       .from("products")
-      .select("id, name, slug, description, sku, price, category, image_url, image_urls, is_active")
+      .select("id, name, slug, description, sku, price, stock, category, image_url, image_urls, is_active")
       .eq("is_active", true)
       .order("id", { ascending: true });
 
@@ -60,6 +60,7 @@ window.ARA_LOAD_PRODUCTS = async function () {
         name: row.name,
         category,
         price: Number(row.price),
+        stock: Number.isFinite(Number(row.stock)) ? Math.max(0, Math.floor(Number(row.stock))) : 0,
         image: row.image_url || (fallback ? fallback.image : ""),
         images: Array.isArray(row.image_urls) && row.image_urls.length ? row.image_urls : (row.image_url ? [row.image_url] : (fallback && fallback.image ? [fallback.image] : [])),
         description: row.description || "",
