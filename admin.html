@@ -218,27 +218,25 @@
     }
 
     .image-preview {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
       width: 100%;
-      min-height: 220px;
-      max-height: 360px;
-      overflow: hidden;
-      border: 1px dashed #d9d3c8;
-      border-radius: 10px;
-      background: #f4f1eb;
-      color: var(--muted);
-      text-align: center;
     }
 
-    .image-preview img {
-      display: block;
-      max-width: 100%;
-      width: 100%;
-      max-height: 360px;
-      object-fit: contain;
+    .image-slot {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid #d9d3c8;
+      border-radius: 10px;
+      background: #f8f6f2;
     }
+
+    .image-slot label { display: block; font-size: 13px; margin-bottom: 8px; }
+    .image-slot input { width: 100%; font-size: 12px; }
+    .image-slot img { display: block; width: 100%; height: 130px; object-fit: contain; margin-top: 8px; background: #eee9e1; border-radius: 6px; }
+    .image-slot .slot-empty { display: grid; place-items: center; height: 130px; margin-top: 8px; color: var(--muted); font-size: 12px; background: #eee9e1; border-radius: 6px; }
+    @media (min-width: 700px) { .image-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
     .form-actions {
       display: flex;
@@ -454,10 +452,60 @@
           </label>
 
           <div class="image-preview-wrap">
-            <label for="imageFile">Product photos (exactly 4)</label>
-            <div class="image-preview" id="imagePreview">Choose four product photos to preview them here</div>
-            <input id="imageFile" type="file" name="imageFiles" accept="image/jpeg,image/png,image/webp" multiple>
-            <p class="help">Select exactly 4 JPG, PNG or WebP photos. Each must be 5 MB or smaller. When editing, leave photos unselected to keep the existing gallery, or select 4 replacement photos.</p>
+            <label>Product photos (up to 10, optional)</label>
+            <p class="help">Upload photos in the exact display order: Image 1 is the main product photo, then Image 2, and so on. Each slot is optional; you can upload just one or any number up to 10. JPG, PNG or WebP only, maximum 5 MB per image. When editing, leave every slot empty to keep the current photos; selecting any slots replaces the gallery with the selected photos in slot order.</p>
+            <div class="image-preview" id="imagePreview">
+              <div class="image-slot" data-image-slot="1">
+                <label for="imageFile1">Image 1 — main photo</label>
+                <input id="imageFile1" type="file" name="imageFile1" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 1</div>
+              </div>
+              <div class="image-slot" data-image-slot="2">
+                <label for="imageFile2">Image 2</label>
+                <input id="imageFile2" type="file" name="imageFile2" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 2</div>
+              </div>
+              <div class="image-slot" data-image-slot="3">
+                <label for="imageFile3">Image 3</label>
+                <input id="imageFile3" type="file" name="imageFile3" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 3</div>
+              </div>
+              <div class="image-slot" data-image-slot="4">
+                <label for="imageFile4">Image 4</label>
+                <input id="imageFile4" type="file" name="imageFile4" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 4</div>
+              </div>
+              <div class="image-slot" data-image-slot="5">
+                <label for="imageFile5">Image 5</label>
+                <input id="imageFile5" type="file" name="imageFile5" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 5</div>
+              </div>
+              <div class="image-slot" data-image-slot="6">
+                <label for="imageFile6">Image 6</label>
+                <input id="imageFile6" type="file" name="imageFile6" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 6</div>
+              </div>
+              <div class="image-slot" data-image-slot="7">
+                <label for="imageFile7">Image 7</label>
+                <input id="imageFile7" type="file" name="imageFile7" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 7</div>
+              </div>
+              <div class="image-slot" data-image-slot="8">
+                <label for="imageFile8">Image 8</label>
+                <input id="imageFile8" type="file" name="imageFile8" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 8</div>
+              </div>
+              <div class="image-slot" data-image-slot="9">
+                <label for="imageFile9">Image 9</label>
+                <input id="imageFile9" type="file" name="imageFile9" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 9</div>
+              </div>
+              <div class="image-slot" data-image-slot="10">
+                <label for="imageFile10">Image 10</label>
+                <input id="imageFile10" type="file" name="imageFile10" accept="image/jpeg,image/png,image/webp">
+                <div class="slot-empty">Optional photo 10</div>
+              </div>
+            </div>
           </div>
 
           <label>
@@ -533,22 +581,40 @@
 
   <script>
     (() => {
-      const input = document.querySelector("#imageFile");
-      const preview = document.querySelector("#imagePreview");
-      if (!input || !preview) return;
-      const maxBytes = 5 * 1024 * 1024, types = ["image/jpeg", "image/png", "image/webp"];
-      let urls = [];
-      function clear() { urls.forEach(URL.revokeObjectURL); urls = []; }
-      input.addEventListener("change", () => {
-        clear(); preview.replaceChildren();
-        const files = Array.from(input.files || []);
-        if (!files.length) { preview.textContent = "Existing photos will be kept if editing."; return; }
-        if (files.length !== 4) { input.value = ""; preview.textContent = "Select exactly 4 photos."; alert("Please select exactly 4 photos."); return; }
-        const invalid = files.find(f => !types.includes(f.type) || f.size > maxBytes || !f.size);
-        if (invalid) { input.value = ""; preview.textContent = "Choose four valid photos."; alert(!types.includes(invalid.type) ? "Use JPG, PNG or WebP photos only." : "Each photo must be 5 MB or smaller."); return; }
-        files.forEach((file, i) => { const url = URL.createObjectURL(file); urls.push(url); const img = document.createElement("img"); img.src=url; img.alt="Product photo "+(i+1); img.style.cssText="width:100px;height:100px;object-fit:cover;margin:4px"; preview.appendChild(img); });
+      const slots = Array.from(document.querySelectorAll("[data-image-slot]"));
+      const maxBytes = 5 * 1024 * 1024;
+      const types = ["image/jpeg", "image/png", "image/webp"];
+      const revokePreviews = () => document.querySelectorAll("[data-image-preview-url]").forEach(img => { URL.revokeObjectURL(img.dataset.imagePreviewUrl); img.remove(); });
+      slots.forEach(slot => {
+        const input = slot.querySelector('input[type="file"]');
+        const empty = slot.querySelector('.slot-empty');
+        if (!input) return;
+        input.addEventListener("change", () => {
+          const old = slot.querySelector("img[data-image-preview-url]");
+          if (old) { URL.revokeObjectURL(old.dataset.imagePreviewUrl); old.remove(); }
+          if (empty) empty.hidden = false;
+          const file = input.files && input.files[0];
+          if (!file) return;
+          if (!types.includes(file.type) || !file.size || file.size > maxBytes) {
+            input.value = "";
+            alert(!types.includes(file.type) ? "Use JPG, PNG or WebP photos only." : "Each photo must be 5 MB or smaller.");
+            return;
+          }
+          const url = URL.createObjectURL(file);
+          const img = document.createElement("img");
+          img.src = url; img.alt = slot.querySelector("label")?.textContent || "Product photo";
+          img.dataset.imagePreviewUrl = url;
+          slot.appendChild(img);
+          if (empty) empty.hidden = true;
+        });
       });
-      document.querySelector("#cancelEdit")?.addEventListener("click", () => { clear(); preview.textContent="Choose four product photos to preview them here"; });
+      document.querySelector("#cancelEdit")?.addEventListener("click", () => {
+        slots.forEach(slot => {
+          const input = slot.querySelector('input[type="file"]'); if (input) input.value = "";
+          const img = slot.querySelector("img[data-image-preview-url]"); if (img) { URL.revokeObjectURL(img.dataset.imagePreviewUrl); img.remove(); }
+          const empty = slot.querySelector('.slot-empty'); if (empty) empty.hidden = false;
+        });
+      });
     })();
   </script>
 </body>

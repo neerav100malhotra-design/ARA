@@ -116,6 +116,13 @@
     return form.querySelector('input[type="file"]');
   }
 
+  // Returns chosen photos in numbered slot order (Image 1 through Image 10).
+  function getImageFiles() {
+    return Array.from(form.querySelectorAll('[data-image-slot] input[type="file"]'))
+      .map(input => input.files && input.files[0])
+      .filter(Boolean);
+  }
+
   function getImageURLInput() {
     // Prefer the existing optional URL input.
     return form.querySelector(
@@ -292,8 +299,13 @@
       form.elements.active.checked = true;
     }
 
-    const fileInput = getFileInput();
-    if (fileInput) fileInput.value = "";
+    form.querySelectorAll('input[type="file"]').forEach(input => { input.value = ""; });
+    form.querySelectorAll('[data-image-slot]').forEach(slot => {
+      const img = slot.querySelector('img[data-image-preview-url]');
+      if (img) { URL.revokeObjectURL(img.dataset.imagePreviewUrl); img.remove(); }
+      const empty = slot.querySelector('.slot-empty');
+      if (empty) empty.hidden = false;
+    });
 
     const heading = $("#formHeading");
     if (heading) heading.textContent = "Add a product";
@@ -420,23 +432,18 @@
       return;
     }
 
-    const fileInput = getFileInput();
-    const imageFiles = Array.from(fileInput?.files || []);
+    const imageFiles = getImageFiles();
     const urlInput = getImageURLInput();
     let imageUrl = String(urlInput?.value || "").trim();
     let newlyUploadedPaths = [];
     let imageUrls = existing?.images || (existing?.image ? [existing.image] : []);
 
-    if (imageFiles.length && imageFiles.length !== 4) {
-      status("Select exactly 4 photos, or select none to keep the existing gallery.", true);
+    if (imageFiles.length > 10) {
+      status("You can upload a maximum of 10 photos.", true);
       return;
     }
     if (imageFiles.some(file => !ALLOWED_TYPES.includes(file.type) || file.size > MAX_IMAGE_SIZE || !file.size)) {
       status("Each photo must be JPG, PNG or WebP and 5 MB or smaller.", true);
-      return;
-    }
-    if (!imageFiles.length && existing && imageUrls.length !== 4) {
-      status("This product needs 4 photos. Select 4 photos to replace its gallery.", true);
       return;
     }
 
@@ -447,7 +454,7 @@
       if (imageFiles.length) {
         const uploaded = [];
         for (let i = 0; i < imageFiles.length; i++) {
-          status(`Uploading photo ${i + 1} of 4…`);
+          status(`Uploading selected photo ${i + 1} of ${imageFiles.length}…`);
           const item = await uploadProductImage(imageFiles[i]);
           uploaded.push(item);
           newlyUploadedPaths.push(item.path);
@@ -502,7 +509,7 @@
         if (newlyUploadedPaths.length) {
           await client.storage
             .from(BUCKET)
-            .remove([newlyUploadedPaths]);
+            .remove(newlyUploadedPaths);
         }
 
         status("Product save failed: " + result.error.message, true);
@@ -562,8 +569,7 @@
         const urlInput = getImageURLInput();
         if (urlInput) urlInput.value = product.image || "";
 
-        const fileInput = getFileInput();
-        if (fileInput) fileInput.value = "";
+        form.querySelectorAll('input[type="file"]').forEach(input => { input.value = ""; });
 
         if (form.elements.active) {
           form.elements.active.checked = product.active;
