@@ -11,7 +11,11 @@
   const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
   let products = [];
+  let rawProducts = [];
   let saving = false;
+  let undoDeleteSnapshot = null;
+  let undoDeleteTimer = null;
+  let undoDeleteExpiry = 0;
 
   if (!form) {
     console.error("ARA admin: #productForm was not found.");
@@ -211,6 +215,74 @@
     };
   }
 
+  // ---------- Undo last product deletion ----------
+
+  function showUndoDelete(product) {
+    undoDeleteSnapshot = product;
+    undoDeleteExpiry = Date.now() + 10000;
+
+    let bar = $("#araUndoDelete");
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "araUndoDelete";
+      bar.className = "admin-card";
+      bar.setAttribute("role", "status");
+      bar.style.cssText = "display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:12px 0;padding:14px 18px";
+      const list = $("#adminProductList");
+      if (list && list.parentElement) list.parentElement.insertBefore(bar, list);
+    }
+
+    bar.innerHTML = `<span>Deleted <strong>${escapeHTML(product.name || "product")}</strong>.</span> <button type="button" class="button button-dark" id="araUndoDeleteButton">Undo (10s)</button>`;
+    const undoButton = $("#araUndoDeleteButton");
+    if (undoButton) undoButton.addEventListener("click", restoreDeletedProduct, { once: true });
+
+    if (undoDeleteTimer) clearInterval(undoDeleteTimer);
+    undoDeleteTimer = setInterval(() => {
+      const remaining = Math.max(0, Math.ceil((undoDeleteExpiry - Date.now()) / 1000));
+      const button = $("#araUndoDeleteButton");
+      if (button) button.textContent = `Undo (${remaining}s)`;
+      if (remaining <= 0) {
+        clearInterval(undoDeleteTimer);
+        undoDeleteTimer = null;
+        undoDeleteSnapshot = null;
+        if (bar.isConnected) bar.remove();
+      }
+    }, 250);
+  }
+
+  async function restoreDeletedProduct() {
+    if (!undoDeleteSnapshot || Date.now() > undoDeleteExpiry) {
+      status("Undo time expired. The product was not restored.", true);
+      return;
+    }
+
+    const snapshot = undoDeleteSnapshot;
+    const button = $("#araUndoDeleteButton");
+    if (button) button.disabled = true;
+    status("Restoring product…");
+
+    try {
+      // Reinsert the complete original row, including its original ID and gallery.
+      const { error } = await client.from("products").insert(snapshot);
+      if (error) {
+        status("Undo failed: " + error.message + ". The product may need to be restored manually.", true);
+        if (button) button.disabled = false;
+        return;
+      }
+
+      if (undoDeleteTimer) clearInterval(undoDeleteTimer);
+      undoDeleteTimer = null;
+      undoDeleteSnapshot = null;
+      const bar = $("#araUndoDelete");
+      if (bar) bar.remove();
+      await loadProducts();
+      status("Product restored successfully.");
+    } catch (error) {
+      status("Undo failed: " + (error.message || "Unexpected error."), true);
+      if (button) button.disabled = false;
+    }
+  }
+
   // ---------- Load products ----------
 
   async function loadProducts() {
@@ -218,9 +290,7 @@
 
     const { data, error } = await client
       .from("products")
-      .select(
-        "id,name,category,price,stock,image_url,image_urls,description,is_active"
-      )
+      .select("*")
       .order("id", { ascending: false });
 
     if (error) {
@@ -228,7 +298,8 @@
       return false;
     }
 
-    products = (data || []).map(normalise);
+    rawProducts = data || [];
+    products = rawProducts.map(normalise);
     render();
 
     status("Products loaded from Supabase.");
@@ -589,11 +660,14 @@
         const product = products.find(
           (item) => String(item.id) === deleteButton.dataset.delete
         );
+        const originalRow = rawProducts.find(
+          (item) => String(item.id) === deleteButton.dataset.delete
+        );
 
-        if (!product) return;
+        if (!product || !originalRow) return;
 
         const confirmed = window.confirm(
-          `Delete "${product.name}" from the catalogue?`
+          `Delete "${product.name}" from the catalogue? You will have 10 seconds to undo.`
         );
 
         if (!confirmed) return;
@@ -621,7 +695,8 @@
 
         resetForm();
         await loadProducts();
-        status("Product deleted.");
+        showUndoDelete(originalRow);
+        status("Product deleted. Use Undo within 10 seconds to restore it.");
       }
     });
   }
