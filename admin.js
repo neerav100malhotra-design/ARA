@@ -105,6 +105,7 @@
       category: (product.category || "rings").toLowerCase(),
       price: Number(product.price) || 0,
       image: product.image_url || "",
+      images: Array.isArray(product.image_urls) && product.image_urls.length ? product.image_urls : (product.image_url ? [product.image_url] : []),
       description: product.description || "",
       active: product.is_active !== false
     };
@@ -210,7 +211,7 @@
     const { data, error } = await client
       .from("products")
       .select(
-        "id,name,category,price,image_url,description,is_active"
+        "id,name,category,price,image_url,image_urls,description,is_active"
       )
       .order("id", { ascending: false });
 
@@ -413,26 +414,39 @@
     }
 
     const fileInput = getFileInput();
-    const imageFile = fileInput?.files?.[0] || null;
+    const imageFiles = Array.from(fileInput?.files || []);
     const urlInput = getImageURLInput();
-
     let imageUrl = String(urlInput?.value || "").trim();
-    let newlyUploadedPath = null;
+    let newlyUploadedPaths = [];
+    let imageUrls = existing?.images || (existing?.image ? [existing.image] : []);
 
-    // Keep the old image if editing and no replacement is selected.
-    if (!imageUrl && existing) {
-      imageUrl = existing.image;
+    if (imageFiles.length && imageFiles.length !== 4) {
+      status("Select exactly 4 photos, or select none to keep the existing gallery.", true);
+      return;
+    }
+    if (imageFiles.some(file => !ALLOWED_TYPES.includes(file.type) || file.size > MAX_IMAGE_SIZE || !file.size)) {
+      status("Each photo must be JPG, PNG or WebP and 5 MB or smaller.", true);
+      return;
+    }
+    if (!imageFiles.length && existing && imageUrls.length !== 4) {
+      status("This product needs 4 photos. Select 4 photos to replace its gallery.", true);
+      return;
     }
 
+    if (!imageUrl && existing) imageUrl = existing.image;
     setSaving(true);
 
     try {
-      if (imageFile) {
-        status("Uploading image to Supabase Storage…");
-
-        const uploaded = await uploadProductImage(imageFile);
-        imageUrl = uploaded.url;
-        newlyUploadedPath = uploaded.path;
+      if (imageFiles.length) {
+        const uploaded = [];
+        for (let i = 0; i < imageFiles.length; i++) {
+          status(`Uploading photo ${i + 1} of 4…`);
+          const item = await uploadProductImage(imageFiles[i]);
+          uploaded.push(item);
+          newlyUploadedPaths.push(item.path);
+        }
+        imageUrls = uploaded.map(item => item.url);
+        imageUrl = imageUrls[0];
       }
 
       if (!imageUrl) {
@@ -453,6 +467,7 @@
         category,
         price,
         image_url: imageUrl,
+        image_urls: imageUrls,
         description,
         is_active: Boolean(form.elements.active?.checked)
       };
@@ -476,10 +491,10 @@
 
       if (result.error) {
         // Best-effort cleanup of a new upload if DB save fails.
-        if (newlyUploadedPath) {
+        if (newlyUploadedPaths.length) {
           await client.storage
             .from(BUCKET)
-            .remove([newlyUploadedPath]);
+            .remove([newlyUploadedPaths]);
         }
 
         status("Product save failed: " + result.error.message, true);

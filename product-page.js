@@ -14,11 +14,22 @@
     }
     document.title = `${product.name} | ARA Silver Jewellery`;
     $("#productBreadcrumb").textContent = product.name;
-    const image = product.image || "";
+    const gallery = Array.isArray(product.images) && product.images.length ? product.images : (product.image ? [product.image] : []);
+    const image = gallery[0] || "";
     target.innerHTML = `
-      <div class="product-detail-image-wrap">${image ? `<img class="product-detail-image" src="${escapeHTML(image)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none';this.nextElementSibling.hidden=false">` : ''}<div class="product-image-placeholder" ${image ? 'hidden' : ''}>ARA</div></div>
+      <div class="product-detail-gallery">
+        <div class="product-detail-image-wrap">${image ? `<img id="productMainImage" class="product-detail-image" src="${escapeHTML(image)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none';this.nextElementSibling.hidden=false">` : ''}<div class="product-image-placeholder" ${image ? 'hidden' : ''}>ARA</div></div>
+        ${gallery.length > 1 ? `<div class="product-gallery-thumbnails" aria-label="Product photos">${gallery.slice(0,4).map((url,i)=>`<button type="button" class="product-gallery-thumb ${i===0?'active':''}" data-gallery-image="${escapeHTML(url)}" aria-label="View photo ${i+1}"><img src="${escapeHTML(url)}" alt="${escapeHTML(product.name)} photo ${i+1}"></button>`).join("")}</div>` : ""}
+      </div>
       <div class="product-detail-info"><span class="eyebrow">${escapeHTML(product.category || 'ARA collection')}</span><h1>${escapeHTML(product.name)}</h1><p class="product-detail-price">${money(product.price)}</p><p class="product-detail-description">${escapeHTML(product.description || 'A considered piece from the ARA silver jewellery collection.')}</p><div class="product-detail-note"><strong>Everyday silver, thoughtfully chosen.</strong><p>Please check product specifications and availability with ARA before placing your order.</p></div><button class="button button-dark product-add-button" type="button" data-add="${escapeHTML(product.id)}">Add to bag</button><p class="product-shipping-note">Cash on delivery available at checkout, subject to confirmation.</p><a class="back-to-shop" href="shop.html">← Continue shopping</a></div>`;
   }
+  document.addEventListener("click", (event) => {
+    const thumb = event.target.closest("[data-gallery-image]");
+    if (!thumb) return;
+    const main = document.querySelector("#productMainImage");
+    if (main) main.src = thumb.dataset.galleryImage;
+    document.querySelectorAll(".product-gallery-thumb").forEach(button => button.classList.toggle("active", button === thumb));
+  });
   document.addEventListener('DOMContentLoaded', () => {
     render();
     window.addEventListener('ara-products-loaded', render);
