@@ -392,7 +392,7 @@
       <a class="brand" href="/" aria-label="ARA home">ARA</a>
       <span class="top-label">Jewellery · Administration</span>
     </div>
-    <div id="adminTopActions"></div>
+    <div id="adminTopActions" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><a href="admin-portal.html" style="display:inline-block;border:1px solid #d9d3c5;border-radius:8px;padding:9px 12px;color:inherit;text-decoration:none;font-size:13px">Store dashboard ↗</a></div>
   </header>
 
   <main class="admin-wrap">
@@ -617,5 +617,5 @@
       });
     })();
   </script>
-</body>
+<script>if(new URLSearchParams(location.search).get('embed')==='1'){document.documentElement.classList.add('ara-embedded-editor');}</script><style>.ara-embedded-editor body{background:#fff!important}.ara-embedded-editor .admin-wrap{max-width:none!important;margin:0!important;padding:14px!important}.ara-embedded-editor .admin-header,.ara-embedded-editor .admin-top,.ara-embedded-editor .eyebrow:first-child{ } .ara-embedded-editor .admin-layout{grid-template-columns:minmax(0,1fr)!important}.ara-embedded-editor .admin-card{box-shadow:none!important}</style></body>
 </html>

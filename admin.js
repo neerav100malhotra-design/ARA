@@ -605,6 +605,9 @@
             ? "Product updated successfully."
             : "Product added successfully."
         );
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: "ara-products-updated" }, window.location.origin);
+        }
       }
     } catch (error) {
       status(error.message || "Unexpected error saving product.", true);

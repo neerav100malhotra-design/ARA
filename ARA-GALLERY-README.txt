@@ -21,3 +21,13 @@ Deploy by replacing the matching files in the same GitHub branch connected to th
 3. Try a photo larger than 5 MB; it should be rejected before upload.
 4. Open the product detail page and click each thumbnail.
 5. Check Supabase Storage bucket settings show a 5 MiB limit.
+
+
+SHOPIFY-INSPIRED STORE DASHBOARD
+--------------------------------
+Open admin-portal.html after deployment. Sign in using the existing authorized Supabase Auth account.
+Dashboard sections: overview, orders, products, inventory, customers, analytics, and settings.
+Order status/tracking/payment updates and stock quantity updates write to Supabase and require suitable UPDATE RLS policies for the signed-in admin.
+Customer list is derived from order records; settings are intentionally stored in this browser only and are not shared between admins.
+The portal uses the existing supabase-config.js publishable key. Never place a Supabase service-role secret in client-side files.
+For a GitHub Pages project URL with a repository subpath, existing site pages that use root-relative paths may need a base-path adjustment; this project is configured for a custom domain/root path (see CNAME).
