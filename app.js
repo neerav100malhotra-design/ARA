@@ -673,17 +673,10 @@
       saveCart([]);
       renderCart();
 
-      if (status) {
-        status.textContent =
-          `Order placed successfully! Your order number is ` +
-          `${result.order_number}. No online payment was taken.`;
-
-        status.classList.add("success");
-      }
-
       form.reset();
-
-      showToast("Your order has been placed.");
+      // Move the customer to a dedicated order confirmation page.
+      const orderNumber = result.order_number || result.order?.order_number || "";
+      window.location.href = `thank-you.html?order=${encodeURIComponent(orderNumber)}`;
 
     } catch (error) {
       console.error("ARA checkout error:", error);
@@ -757,7 +750,11 @@
     }
 
     if (target.closest("#cartButton")) {
-      openCart();
+      if (target.closest("#cartButton").dataset.cartPage === "true") {
+        window.location.href = "cart.html";
+      } else {
+        openCart();
+      }
       return;
     }
 

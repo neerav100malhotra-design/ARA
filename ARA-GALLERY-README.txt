@@ -31,3 +31,19 @@ Order status/tracking/payment updates and stock quantity updates write to Supaba
 Customer list is derived from order records; settings are intentionally stored in this browser only and are not shared between admins.
 The portal uses the existing supabase-config.js publishable key. Never place a Supabase service-role secret in client-side files.
 For a GitHub Pages project URL with a repository subpath, existing site pages that use root-relative paths may need a base-path adjustment; this project is configured for a custom domain/root path (see CNAME).
+
+
+AUTOMATIC INVENTORY FOR ORDERS
+-------------------------------
+Run ARA-inventory-automation-migration.sql once in Supabase Dashboard > SQL Editor. It adds database triggers so new order items reduce stock, cancellation restores stock, and re-opening a cancelled order deducts it again. If stock is insufficient, creating the order item fails rather than allowing negative stock. This applies to orders created after the migration; existing orders are not backfilled because current stock may already have been adjusted manually. Test with one inexpensive/test product and a test order before going live.
+
+Inventory edits from the admin portal should be verified in Supabase Table Editor > public.products after saving. If the portal says saved but the database row does not change, check that the updated admin-portal.js is deployed and that the signed-in admin has UPDATE and SELECT RLS policies on public.products.
+
+
+CUSTOMER CART + ORDER CONFIRMATION / TRACKING
+--------------------------------------------
+New pages: cart.html (dedicated shopping bag) and thank-you.html (confirmation and order tracking form). Successful checkout redirects to thank-you.html?order=ORDER_NUMBER.
+
+For privacy, order tracking calls a separate Supabase Edge Function named track-order; it must validate order_number + customer email and return only that order's limited fields. Deploy the included supabase/functions/track-order/index.ts with Supabase CLI, and set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY secrets (never put the service-role key in browser files). See function source. The thank-you page won't be able to retrieve order status until that function is deployed.
+
+The cart page uses the existing localStorage cart and existing create-order checkout flow. Header cart links should point to cart.html to make the separate cart page discoverable.
