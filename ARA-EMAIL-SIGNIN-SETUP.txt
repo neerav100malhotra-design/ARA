@@ -1,20 +1,19 @@
-ARA EMAIL OTP SIGN-IN
+ARA EMAIL MAGIC-LINK SIGN-IN
 
-Added:
-- account.html: customer sign-in / account creation page
-- account.js: Supabase email OTP request, OTP verification, session persistence, sign-out
-- Navigation links to My Account from home, shop, cart and thank-you pages
+This version uses Supabase passwordless email Magic Links (customers click a link; they do not enter a code).
 
-One-time Supabase setup:
+Included: account.html and account.js updated for Magic Link sign-in and callback handling. The rest of the ARA storefront, cart, thank-you/order tracking pages, and unified admin portal are retained.
+
+Supabase setup:
 1. Open Supabase Dashboard > Authentication > URL Configuration.
-2. Set Site URL to your live store domain (for example https://arapcb.com).
-3. Add your live account page URL to Redirect URLs (for example https://arapcb.com/account.html). Also add your local development URL if needed.
-4. In Authentication > Email Templates, ensure the Magic Link/OTP email template includes the numeric token variable {{ .Token }} if you want customers to type a code. The account page uses email OTP code verification.
-5. Check Authentication > Providers > Email is enabled.
-6. Deploy the updated files and test using an email you can access. Check spam if the code does not arrive.
+2. Set Site URL to https://arapcb.com (or your actual production domain).
+3. Add https://arapcb.com/account.html to Redirect URLs. Add your local development URL only if you use one.
+4. Authentication > Providers > Email: ensure email sign-in is enabled.
+5. Keep the Magic Link email template enabled. The default clickable sign-in link template is appropriate. No custom SMTP is required just to test, but the default sender has rate limits.
+6. Deploy the complete folder to your hosting provider and test with an email you can access.
 
 Important:
-- Supabase's default email sender has rate limits; for reliable production delivery, configure custom SMTP.
-- This adds email authentication, but it does NOT automatically link previous guest orders to accounts. The current deployed create-order Edge Function must be updated to associate authenticated orders with auth.users.id before the account page can safely display account-specific order history. Do not make the orders table publicly readable.
-- The My Orders section intentionally filters by user_id and may show an error until that database/checkout integration is added.
+- The account page uses signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo } }) and completes the callback if Supabase returns a PKCE code.
+- If your Supabase project is configured to send numeric OTP codes instead of clickable links, this website's sign-in experience will not match the template; keep the default Magic Link template for this build.
+- My Orders queries only rows linked to the signed-in auth user via orders.user_id. You must update the database schema/RLS and checkout Edge Function to associate new orders with auth.users.id before account order history can work. Do not expose all orders publicly.
 - Do not put a Supabase service-role/secret key in any browser-side file.
