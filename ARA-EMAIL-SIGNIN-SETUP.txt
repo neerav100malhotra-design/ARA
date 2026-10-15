@@ -1,0 +1,20 @@
+ARA EMAIL OTP SIGN-IN
+
+Added:
+- account.html: customer sign-in / account creation page
+- account.js: Supabase email OTP request, OTP verification, session persistence, sign-out
+- Navigation links to My Account from home, shop, cart and thank-you pages
+
+One-time Supabase setup:
+1. Open Supabase Dashboard > Authentication > URL Configuration.
+2. Set Site URL to your live store domain (for example https://arapcb.com).
+3. Add your live account page URL to Redirect URLs (for example https://arapcb.com/account.html). Also add your local development URL if needed.
+4. In Authentication > Email Templates, ensure the Magic Link/OTP email template includes the numeric token variable {{ .Token }} if you want customers to type a code. The account page uses email OTP code verification.
+5. Check Authentication > Providers > Email is enabled.
+6. Deploy the updated files and test using an email you can access. Check spam if the code does not arrive.
+
+Important:
+- Supabase's default email sender has rate limits; for reliable production delivery, configure custom SMTP.
+- This adds email authentication, but it does NOT automatically link previous guest orders to accounts. The current deployed create-order Edge Function must be updated to associate authenticated orders with auth.users.id before the account page can safely display account-specific order history. Do not make the orders table publicly readable.
+- The My Orders section intentionally filters by user_id and may show an error until that database/checkout integration is added.
+- Do not put a Supabase service-role/secret key in any browser-side file.
